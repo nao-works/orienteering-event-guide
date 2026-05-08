@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Oスタ — 締切後の発行支援ツール</title>
+<title>Oスタ — スタートリスト作成ツール</title>
 <style>
 /* ========== Reset & Base ========== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1187,16 +1187,16 @@ body.edit-mode #editModeBtn {
 <div class="container">
   <!-- Header -->
   <div class="header no-print">
-    <h1>Oスタ — 締切後の発行支援ツール</h1>
-    <p>JOYのCSVから、プログラム用メモとスタートリストを作ります</p>
+    <h1>Oスタ — スタートリスト作成ツール</h1>
+    <p>JOYのCSVから、単日大会のスタートリストを作ります</p>
     <div class="role-note">
       <strong>単日大会向け。</strong>
-      クラス別人数、公開前チェック、スタートリスト、Mulkaたたき台をまとめて確認できます。
+      CSV確認、生成設定、公開前チェックをブラウザだけで進めます。クラス別人数などの集計メモも出せます。
     </div>
     <div class="publish-flow" aria-label="Oスタの流れ">
       <span>CSVを確認</span>
-      <span>プログラム用メモ</span>
-      <span>スタートリスト発行</span>
+      <span>スタート順を作る</span>
+      <span>公開前チェック</span>
     </div>
   </div>
 
@@ -1312,12 +1312,12 @@ body.edit-mode #editModeBtn {
   <div class="card hidden" id="resultCard">
     <div class="card-title no-print">スタートリスト</div>
     <div class="btn-group no-print">
-      <button class="btn btn-outline" id="downloadMulka">Mulka2 CSV ダウンロード</button>
-      <button class="btn btn-outline" id="downloadCheckMemo">プログラム用メモ ダウンロード</button>
       <div>
         <button class="btn btn-outline" id="printBtn">PDF保存 / 印刷</button>
         <div class="print-hint">ブラウザの印刷ダイアログで「PDFに保存」を選択できます</div>
       </div>
+      <button class="btn btn-outline" id="downloadCheckMemo">集計メモ ダウンロード</button>
+      <button class="btn btn-outline" id="downloadMulka">Mulkaたたき台 CSV</button>
       <button class="btn btn-outline" id="editModeBtn">並び替え操作</button>
       <button class="btn btn-outline" id="resetOrderBtn">全クラス並び順リセット</button>
       <button class="btn btn-outline" id="wreRankingBtn" style="display:none;">🌐 WRE: ME/WEをランキング順にする</button>
@@ -4227,7 +4227,7 @@ function renderOutputCheck(entries) {
     html += `<li>同じレーン・同じ時刻: ${escapeHtml(compactList(check.laneTimeConflicts.map(g => g.key)))}</li>`;
   }
   html += renderScopeWarning();
-  html += '<li>Mulka取込前に、カード番号とクラス設定をもう一度確認してください。</li>';
+  html += '<li>公開前に、氏名、所属、カード番号、クラス設定をもう一度確認してください。</li>';
   html += '</ul>';
 
   outputCheckEl.innerHTML = html;
@@ -4538,9 +4538,9 @@ function buildDownloadWarnings() {
 function confirmMulkaDownload() {
   const warnings = buildDownloadWarnings();
   const lines = [
-    'Mulka2 CSVをダウンロードします。',
+    'Mulkaたたき台CSVをダウンロードします。',
     '',
-    '取込前に、入力データ、カード番号、クラス設定、スタート時刻を確認してください。',
+    'Mulkaに取り込む前に、入力データ、カード番号、クラス設定、スタート時刻を確認してください。',
   ];
   if (warnings.length > 0) {
     lines.push('', '気になる点:', ...warnings.map(w => `・${w}`));
@@ -4562,14 +4562,14 @@ function buildCheckMemo() {
   const options = lastGenerationOptions || {};
   const lines = [];
 
-  lines.push('Oスタ プログラム・発行前メモ');
+  lines.push('Oスタ スタートリスト集計メモ');
   lines.push('');
   lines.push(`作成日時: ${new Date().toLocaleString('ja-JP')}`);
   if (currentFileInfo) {
     lines.push(`入力ファイル: ${currentFileInfo.name} (${formatFileSize(currentFileInfo.size)})`);
   }
   lines.push('');
-  lines.push('プログラム掲載用');
+  lines.push('集計');
   lines.push(`- 出走数: ${entryCheck.total}件`);
   lines.push(`- クラス数: ${entryCheck.classTotal}`);
   lines.push(`- クラス別: ${formatClassCountSummary(entryCheck.classCounts) || 'なし'}`);
@@ -4612,7 +4612,8 @@ function buildCheckMemo() {
   }
   lines.push('');
   lines.push('確認事項');
-  lines.push('- Mulka取込前に、カード番号とクラス設定を確認する。');
+  lines.push('- 公開前に、氏名、所属、カード番号、クラス設定を確認する。');
+  lines.push('- Mulkaたたき台を使う場合は、Mulka取込前に設定と時刻を確認する。');
   lines.push('- 正式な大会運営で使う場合は、入力ファイルが確定版か確認する。');
   lines.push('');
 
@@ -4631,7 +4632,7 @@ $('downloadCheckMemo').addEventListener('click', () => {
   if (!currentEntries) return;
   const text = buildCheckMemo();
   const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-  downloadBlob(blob, 'osta_program_memo.txt');
+  downloadBlob(blob, 'osta_summary_memo.txt');
 });
 
 $('printBtn').addEventListener('click', () => {
