@@ -74,6 +74,21 @@ body {
   font-size: 0.9rem;
 }
 
+.status-note {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: var(--radius);
+  color: #9a3412;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin: -8px 0 24px;
+  padding: 12px 16px;
+}
+
+.status-note strong {
+  color: #7c2d12;
+}
+
 /* ========== Card ========== */
 .card {
   background: white;
@@ -965,6 +980,11 @@ body {
   <div class="header no-print">
     <h1>Oスタ — スタートリスト生成ツール</h1>
     <p>JOY (Japan-O-entrY) のエントリーCSVファイルからスタートリストを生成します</p>
+  </div>
+
+  <div class="status-note no-print">
+    <strong>簡易・下書き用。</strong>
+    大会運営の正本生成では、入力検査、イベント設定、補正履歴、manifest を残せる CLI / core workflow を使ってください。
   </div>
 
   <!-- File Drop Zone -->
