@@ -70,39 +70,9 @@ body {
 }
 
 .header p {
-  color: var(--gray-500);
-  font-size: 0.9rem;
-}
-
-.role-note {
-  color: var(--gray-600);
-  font-size: 0.84rem;
-  line-height: 1.7;
-  margin: 10px auto 0;
-  max-width: 680px;
-}
-
-.role-note strong {
-  color: var(--gray-800);
-}
-
-.publish-flow {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  justify-content: center;
-  margin: 12px auto 0;
-  max-width: 760px;
-}
-
-.publish-flow span {
-  background: white;
-  border: 1px solid var(--gray-200);
-  border-radius: 999px;
-  color: var(--gray-600);
-  font-size: 0.78rem;
-  padding: 4px 10px;
+  color: var(--gray-700);
+  font-size: 1.05rem;
+  font-weight: 600;
 }
 
 /* ========== Card ========== */
@@ -136,7 +106,7 @@ body {
 .dropzone {
   border: 2px dashed var(--gray-300);
   border-radius: var(--radius);
-  padding: 36px 20px;
+  padding: 42px 20px;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -150,14 +120,23 @@ body {
 }
 
 .dropzone-icon {
-  font-size: 2.5rem;
-  color: var(--gray-400);
-  margin-bottom: 12px;
+  align-items: center;
+  background: var(--blue-light);
+  border-radius: 999px;
+  color: var(--blue-dark);
+  display: inline-flex;
+  font-size: 0.95rem;
+  font-weight: 800;
+  height: 58px;
+  justify-content: center;
+  letter-spacing: 0;
+  margin-bottom: 14px;
+  width: 58px;
 }
 
 .dropzone-text {
-  color: var(--gray-600);
-  font-size: 0.95rem;
+  color: var(--gray-800);
+  font-size: 1rem;
 }
 
 .dropzone-text strong {
@@ -345,29 +324,33 @@ body {
   margin-bottom: 10px;
 }
 
-.input-check > .check-panel-title {
+.check-panel > .check-panel-title {
   cursor: pointer;
   list-style: none;
 }
 
-.input-check > .check-panel-title::-webkit-details-marker {
+.check-panel > .check-panel-title::-webkit-details-marker {
   display: none;
 }
 
-.input-check > .check-panel-title::after {
+.check-panel > .check-panel-title::after {
   color: var(--gray-400);
-  content: "閉じる";
+  content: "詳細";
   float: right;
   font-size: 0.78rem;
   font-weight: 500;
 }
 
-.input-check:not([open]) > .check-panel-title {
+.check-panel:not([open]) > .check-panel-title {
   margin-bottom: 0;
 }
 
-.input-check:not([open]) > .check-panel-title::after {
-  content: "開く";
+.check-panel:not([open]) > .check-panel-title::after {
+  content: "詳細";
+}
+
+.output-check {
+  margin-bottom: 16px;
 }
 
 .check-grid {
@@ -886,7 +869,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 16px;
+  margin: 12px 0 12px;
 }
 
 body:not(.edit-mode) .startlist-class-actions button,
@@ -905,12 +888,6 @@ body.edit-mode #editModeBtn {
 .generate-section {
   text-align: center;
   margin: 24px 0;
-}
-
-.print-hint {
-  font-size: 0.75rem;
-  color: var(--gray-400);
-  margin-top: 4px;
 }
 
 /* ========== Lane header ========== */
@@ -1187,33 +1164,22 @@ body.edit-mode #editModeBtn {
 <div class="container">
   <!-- Header -->
   <div class="header no-print">
-    <h1>Oスタ — スタートリスト作成ツール</h1>
-    <p>JOYのCSVから、単日大会のスタートリストを作ります</p>
-    <div class="role-note">
-      <strong>単日大会向け。</strong>
-      CSV確認、生成設定、公開前チェックをブラウザだけで進めます。クラス別人数などの集計メモも出せます。
-    </div>
-    <div class="publish-flow" aria-label="Oスタの流れ">
-      <span>CSVを確認</span>
-      <span>スタート順を作る</span>
-      <span>公開前チェック</span>
-    </div>
+    <h1>Oスタ</h1>
+    <p>CSV → スタートリスト</p>
   </div>
 
   <!-- File Drop Zone -->
   <div class="card no-print" id="dropzoneCard">
     <div class="dropzone" id="dropzone">
-      <div class="dropzone-icon">&#128206;</div>
+      <div class="dropzone-icon">CSV</div>
       <div class="dropzone-text">
-        CSVファイルをここにドラッグ＆ドロップ<br>
-        または<strong>クリックして選択</strong>
+        <strong>JOY CSV/TSVを選択</strong>
       </div>
-      <div class="dropzone-hint">JOY 締切後にダウンロードしたCSV/TSV（Shift_JIS / UTF-16 対応）</div>
+      <div class="dropzone-hint">ドラッグ＆ドロップ可</div>
     </div>
     <input type="file" id="fileInput" accept=".csv,.tsv,.txt" class="hidden">
     <div class="sample-actions">
-      <button type="button" class="btn btn-primary" id="sampleBtn">サンプルで試す</button>
-      <span class="hint">架空データですぐ試せます</span>
+      <button type="button" class="btn btn-outline" id="sampleBtn">サンプル</button>
     </div>
     <div id="fileInfo" class="file-info hidden">
       <span class="file-name" id="fileName"></span>
@@ -1312,24 +1278,21 @@ body.edit-mode #editModeBtn {
   <div class="card hidden" id="resultCard">
     <div class="card-title no-print">スタートリスト</div>
     <div class="btn-group no-print">
-      <div>
-        <button class="btn btn-outline" id="printBtn">PDF保存 / 印刷</button>
-        <div class="print-hint">ブラウザの印刷ダイアログで「PDFに保存」を選択できます</div>
-      </div>
-      <button class="btn btn-outline" id="downloadCheckMemo">集計メモ ダウンロード</button>
-      <button class="btn btn-outline" id="downloadMulka">Mulkaたたき台 CSV</button>
-      <button class="btn btn-outline" id="editModeBtn">並び替え操作</button>
-      <button class="btn btn-outline" id="resetOrderBtn">全クラス並び順リセット</button>
-      <button class="btn btn-outline" id="wreRankingBtn" style="display:none;">🌐 WRE: ME/WEをランキング順にする</button>
+      <button class="btn btn-outline" id="printBtn" title="PDF保存 / 印刷">PDF</button>
+      <button class="btn btn-outline" id="downloadCheckMemo" title="集計メモをダウンロード">集計</button>
+      <button class="btn btn-outline" id="downloadMulka" title="Mulkaたたき台CSV">Mulka</button>
+      <button class="btn btn-outline" id="editModeBtn">並び替え</button>
+      <button class="btn btn-outline" id="resetOrderBtn" title="全クラスの並び順をリセット">リセット</button>
+      <button class="btn btn-outline" id="wreRankingBtn" title="ME/WEをランキング順にする" style="display:none;">WRE</button>
       <button class="btn btn-outline" id="regenerateBtn">再生成</button>
       <div style="position:relative; display:inline-block;">
-        <button class="btn btn-outline" id="colToggleBtn">表示列</button>
+        <button class="btn btn-outline" id="colToggleBtn" title="表示列">列</button>
         <div id="colTogglePopover" class="col-toggle-popover hidden">
           <div class="column-toggles" id="columnTogglesResult"></div>
         </div>
       </div>
     </div>
-    <div id="outputCheck" class="check-panel no-print hidden"></div>
+    <div id="outputCheck" class="no-print hidden"></div>
     <div id="startlistOutput"></div>
   </div>
 </div>
@@ -2161,6 +2124,7 @@ const fileNameEl = $('fileName');
 const fileMetaEl = $('fileMeta');
 const fileRemoveEl = $('fileRemove');
 const sampleBtn = $('sampleBtn');
+const sampleActionsEl = document.querySelector('.sample-actions');
 const parseResultEl = $('parseResult');
 const settingsCard = $('settingsCard');
 const settingsDetails = $('settingsDetails');
@@ -2174,7 +2138,7 @@ const editModeBtn = $('editModeBtn');
 function setEditMode(enabled) {
   document.body.classList.toggle('edit-mode', enabled);
   if (editModeBtn) {
-    editModeBtn.textContent = enabled ? '通常表示に戻す' : '並び替え操作';
+    editModeBtn.textContent = enabled ? '完了' : '並び替え';
   }
 }
 
@@ -2236,6 +2200,7 @@ function handleFile(file, options = {}) {
   fileMetaEl.textContent = formatFileSize(file.size);
   fileInfoEl.classList.remove('hidden');
   dropzone.classList.add('hidden');
+  if (sampleActionsEl) sampleActionsEl.classList.add('hidden');
 
   const reader = new FileReader();
   reader.onload = () => {
@@ -2318,12 +2283,8 @@ function showParseSuccess(total, classCounts) {
   parseResultEl.className = 'parse-result success';
   parseResultEl.classList.remove('hidden');
 
-  let html = `<strong>${total}件</strong>を読み取りました`;
-  html += '<div class="class-summary">';
-  for (const [cls, count] of Object.entries(classCounts).sort((a, b) => a[0].localeCompare(b[0]))) {
-    html += `<span class="class-badge"><span class="class-label">${escapeHtml(cls)}</span> <span class="count">${count}</span></span>`;
-  }
-  html += '</div>';
+  const classTotal = Object.keys(classCounts || {}).length;
+  let html = `<strong>${total}件</strong> / ${classTotal}クラス`;
   html += renderParticipantCheck(currentParticipants);
   parseResultEl.innerHTML = html;
 }
@@ -2409,15 +2370,20 @@ function renderParticipantCheck(participants) {
   if (check.duplicateNames.length > 0) warnings.push(`同名・同所属の可能性: ${check.duplicateNames.length}組`);
   if (check.groupStarts > 0) warnings.push(`グループクラス: ${check.groupStarts}組`);
 
-  let html = '<details class="check-panel input-check" open>';
-  html += '<summary class="check-panel-title">読込後の確認</summary>';
+  const scopeWarning = renderScopeWarning();
+  const issueCount = warnings.length + (scopeWarning ? 1 : 0);
+  const summaryText = issueCount > 0
+    ? `読込 ${check.total}件 / 要確認 ${issueCount}`
+    : `読込 ${check.total}件`;
+
+  let html = '<details class="check-panel input-check">';
+  html += `<summary class="check-panel-title">${escapeHtml(summaryText)}</summary>`;
   html += '<div class="check-grid">';
   html += `<div class="check-item"><strong>読取件数</strong><span>${check.total}件 / ${check.classTotal}クラス</span></div>`;
   html += `<div class="check-item ${check.blankCards ? 'warn' : ''}"><strong>カード番号未入力</strong><span>${check.blankCards}件</span></div>`;
   html += `<div class="check-item ${check.duplicateCards.length ? 'error' : ''}"><strong>同じカード番号</strong><span>${check.duplicateCards.length}組</span></div>`;
   html += `<div class="check-item ${check.duplicateNames.length ? 'warn' : ''}"><strong>同名・同所属の可能性</strong><span>${check.duplicateNames.length}組</span></div>`;
   html += '</div>';
-  const scopeWarning = renderScopeWarning();
   if (warnings.length > 0 || scopeWarning) {
     html += '<ul class="check-list">';
     html += scopeWarning;
@@ -2436,6 +2402,7 @@ function resetUI() {
   fileInput.value = '';
   fileInfoEl.classList.add('hidden');
   dropzone.classList.remove('hidden');
+  if (sampleActionsEl) sampleActionsEl.classList.remove('hidden');
   parseResultEl.classList.add('hidden');
   settingsCard.classList.add('hidden');
   generateSection.classList.add('hidden');
@@ -3028,6 +2995,7 @@ function generate() {
   renderStartList(currentEntries);
   const inputCheck = parseResultEl.querySelector('.input-check');
   if (inputCheck) inputCheck.open = false;
+  parseResultEl.classList.add('hidden');
   resultCard.classList.remove('hidden');
   generateSection.classList.add('hidden');
 
@@ -4199,36 +4167,51 @@ function renderOutputCheck(entries) {
   if (!outputCheckEl || !entries || entries.length === 0) return;
 
   const check = analyzeEntries(entries);
-  const rankingText = lastGenerationOptions && lastGenerationOptions.rankings.length > 0
-    ? `${lastGenerationOptions.rankings.length}件読み込み済み`
-    : 'なし';
-  const seedText = lastGenerationOptions ? lastGenerationOptions.seed : '未記録';
+  const rankingCount = lastGenerationOptions && lastGenerationOptions.rankings
+    ? lastGenerationOptions.rankings.length
+    : 0;
   const timeText = check.firstStart && check.lastStart
     ? `${check.firstStart} - ${check.lastStart}`
     : '未設定';
 
-  let html = '<div class="check-panel-title">出力前チェック</div>';
+  const warningItems = [];
+  if (check.blankCards > 0) warningItems.push(`カード番号未入力: ${check.blankCards}件`);
+  if (check.duplicateCards.length > 0) warningItems.push(`同じカード番号: ${check.duplicateCards.length}組`);
+  if (check.duplicateStartNumbers.length > 0) warningItems.push(`同じNo: ${check.duplicateStartNumbers.length}組`);
+  if (check.laneTimeConflicts.length > 0) warningItems.push(`同じレーン・同じ時刻: ${check.laneTimeConflicts.length}組`);
+  const scopeWarning = renderScopeWarning();
+  const issueCount = warningItems.length + (scopeWarning ? 1 : 0);
+  const summaryText = issueCount > 0
+    ? `${check.total}件 / ${check.classTotal}クラス / 要確認 ${issueCount}`
+    : `${check.total}件 / ${check.classTotal}クラス`;
+
+  let html = '<details class="check-panel output-check">';
+  html += `<summary class="check-panel-title">${escapeHtml(summaryText)}</summary>`;
   html += '<div class="check-grid">';
   html += `<div class="check-item"><strong>出走数</strong><span>${check.total}件 / ${check.classTotal}クラス</span></div>`;
   html += `<div class="check-item"><strong>スタート時刻</strong><span>${escapeHtml(timeText)}</span></div>`;
   html += `<div class="check-item"><strong>レーン</strong><span>${check.laneTotal}レーン</span></div>`;
-  html += `<div class="check-item"><strong>ランキングデータ</strong><span>${escapeHtml(rankingText)}</span></div>`;
+  if (rankingCount > 0) {
+    html += `<div class="check-item"><strong>ランキング</strong><span>${rankingCount}件</span></div>`;
+  }
   html += `<div class="check-item ${check.blankCards ? 'warn' : ''}"><strong>カード番号未入力</strong><span>${check.blankCards}件</span></div>`;
   html += `<div class="check-item ${check.duplicateCards.length ? 'error' : ''}"><strong>同じカード番号</strong><span>${check.duplicateCards.length}組</span></div>`;
   html += `<div class="check-item ${check.duplicateStartNumbers.length ? 'error' : ''}"><strong>同じNo</strong><span>${check.duplicateStartNumbers.length}組</span></div>`;
   html += `<div class="check-item ${check.laneTimeConflicts.length ? 'error' : ''}"><strong>同時刻の重なり</strong><span>${check.laneTimeConflicts.length}組</span></div>`;
   html += '</div>';
-  html += '<ul class="check-list">';
-  html += `<li>ランダムシード: ${escapeHtml(String(seedText))}</li>`;
-  if (check.duplicateCards.length > 0) {
-    html += `<li>同じカード番号: ${escapeHtml(compactList(check.duplicateCards.map(g => g.key)))}</li>`;
+  if (warningItems.length > 0 || scopeWarning) {
+    html += '<ul class="check-list">';
+    html += scopeWarning;
+    warningItems.forEach(w => { html += `<li>${escapeHtml(w)}</li>`; });
+    if (check.duplicateCards.length > 0) {
+      html += `<li>同じカード番号: ${escapeHtml(compactList(check.duplicateCards.map(g => g.key)))}</li>`;
+    }
+    if (check.laneTimeConflicts.length > 0) {
+      html += `<li>同じレーン・同じ時刻: ${escapeHtml(compactList(check.laneTimeConflicts.map(g => g.key)))}</li>`;
+    }
+    html += '</ul>';
   }
-  if (check.laneTimeConflicts.length > 0) {
-    html += `<li>同じレーン・同じ時刻: ${escapeHtml(compactList(check.laneTimeConflicts.map(g => g.key)))}</li>`;
-  }
-  html += renderScopeWarning();
-  html += '<li>公開前に、氏名、所属、カード番号、クラス設定をもう一度確認してください。</li>';
-  html += '</ul>';
+  html += '</details>';
 
   outputCheckEl.innerHTML = html;
   outputCheckEl.classList.remove('hidden');
