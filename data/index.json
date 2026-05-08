@@ -1,0 +1,101 @@
+{
+  "events": [
+    {
+      "id": "parko-osaka-2025",
+      "name": "パークOツアー in 関西2025 大阪大会",
+      "date": "2026-02-28",
+      "file": "parko-osaka-2025.json",
+      "startlist": "parko-osaka-2025-startlist.json",
+      "source": "プログラム"
+    },
+    {
+      "id": "kamiooka-citylong-2026",
+      "name": "上大岡シティロングオリエンテーリング",
+      "date": "2026-02-28",
+      "file": "kamiooka-citylong-2026.json",
+      "startlist": "kamiooka-citylong-2026-startlist.json",
+      "source": "要項"
+    },
+    {
+      "id": "yokohama-olc-practice-2026",
+      "name": "横浜OLクラブ 26年2月練習会",
+      "date": "2026-02-28",
+      "file": "yokohama-olc-practice-2026.json",
+      "startlist": "yokohama-olc-practice-2026-startlist.json",
+      "source": "プログラム"
+    },
+    {
+      "id": "club-relay-2026",
+      "name": "第28回クラブ対抗リレーオリエンテーリング大会",
+      "date": "2026-03-01",
+      "file": "club-relay-2026.json",
+      "startlist": "club-relay-2026-startlist.json",
+      "source": "プログラム"
+    },
+    {
+      "id": "maruta-ichimon-2026",
+      "name": "第7回丸田一門練（北大春合宿）",
+      "date": "2026-03-11/2026-03-12",
+      "file": "maruta-ichimon-2026.json",
+      "source": "要項"
+    },
+    {
+      "id": "icmr-middle-2025",
+      "name": "インカレミドル2025（青山高原）",
+      "date": "2026-03-14",
+      "file": "icmr-middle-2025.json",
+      "startlist": "icmr-middle-2025-startlist.json",
+      "source": "要項3+スタートリスト"
+    },
+    {
+      "id": "takasaki-2026",
+      "name": "第34回オリエンテーリング高崎大会【観音山丘陵】",
+      "date": "2026-03-15",
+      "file": "takasaki-2026.json",
+      "source": "要項"
+    },
+    {
+      "id": "icmr-relay-2025",
+      "name": "インカレリレー2025（青山高原）",
+      "date": "2026-03-15",
+      "file": "icmr-relay-2025.json",
+      "startlist": "icmr-relay-2025-startlist.json",
+      "source": "要項3+エントリーリスト"
+    },
+    {
+      "id": "shodoshima-middle-2026",
+      "name": "小豆島オリエンテーリング大会 Day1 ミドル",
+      "date": "2026-03-20",
+      "file": "shodoshima-middle-2026.json",
+      "source": "プログラム"
+    },
+    {
+      "id": "shodoshima-long-2026",
+      "name": "小豆島オリエンテーリング大会 Day2 ロング",
+      "date": "2026-03-21",
+      "file": "shodoshima-long-2026.json",
+      "source": "プログラム"
+    },
+    {
+      "id": "ageo-olc-128-2026",
+      "name": "第128回上尾OLC大会",
+      "date": "2026-03-22",
+      "file": "ageo-olc-128-2026.json",
+      "source": "未取得"
+    },
+    {
+      "id": "shizuoka-olc-practice-202603",
+      "name": "静岡OLC3月練習会",
+      "date": "2026-03-22",
+      "file": "shizuoka-olc-practice-202603.json",
+      "source": "未取得"
+    },
+    {
+      "id": "waseda-oc-2026",
+      "name": "第45回早稲田大学オリエンテーリングクラブ大会",
+      "date": "2026-05-31",
+      "file": "waseda-oc-2026.json",
+      "source": "要項"
+    }
+  ]
+}

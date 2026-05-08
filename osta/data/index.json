@@ -1,0 +1,36 @@
+{
+  "latestDate": "2026-03-01",
+  "dates": {
+    "2026-02-23": {
+      "iof_foot_m": {
+        "file": "iof_foot_m_2026-02-23.json"
+      }
+    },
+    "2026-03-01": {
+      "iof_foot_m": {
+        "file": "iof_foot_m_2026-03-01.json"
+      },
+      "iof_foot_w": {
+        "file": "iof_foot_w_2026-03-01.json"
+      },
+      "iof_sprint_m": {
+        "file": "iof_sprint_m_2026-03-01.json"
+      },
+      "iof_sprint_w": {
+        "file": "iof_sprint_w_2026-03-01.json"
+      },
+      "joa_foot_m": {
+        "file": "joa_foot_m_2026-03-01.json"
+      },
+      "joa_foot_w": {
+        "file": "joa_foot_w_2026-03-01.json"
+      },
+      "joa_sprint_m": {
+        "file": "joa_sprint_m_2026-03-01.json"
+      },
+      "joa_sprint_w": {
+        "file": "joa_sprint_w_2026-03-01.json"
+      }
+    }
+  }
+}

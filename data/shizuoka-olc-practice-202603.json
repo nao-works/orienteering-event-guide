@@ -1,0 +1,23 @@
+{
+  "event": {
+    "name": "静岡OLC3月練習会",
+    "date": "2026-03-22",
+    "venue": null,
+    "venue_address": null,
+    "organizer": "静岡OLC",
+    "days": 1
+  },
+  "timeline": [],
+  "info": {
+    "access": null,
+    "reception": null,
+    "start_procedure": null,
+    "courses": [],
+    "equipment": null,
+    "emergency": null,
+    "facilities": null,
+    "food_and_bath": null
+  },
+  "start_walk_minutes": 5,
+  "notes": null
+}

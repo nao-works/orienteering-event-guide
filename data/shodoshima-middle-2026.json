@@ -1,0 +1,102 @@
+{
+  "event": {
+    "name": "小豆島オリエンテーリング大会 Day1 ミドル",
+    "date": "2026-03-20",
+    "venue": "寒霞渓ロープウェイ山頂駅広場",
+    "venue_address": "〒761-4433 香川県小豆郡小豆島町神懸通乙168",
+    "organizer": "香川県オリエンテーリング協会（主管: OLP兵庫）",
+    "days": 1
+  },
+  "timeline": [
+    {
+      "time": "11:30",
+      "label": "駐車場開放・受付開始 / 大会バス（港→会場）順次出発",
+      "category": "reception",
+      "details": "Day1は土庄港・坂手港・福田港発着",
+      "day": 1,
+      "applies_to": "all"
+    },
+    {
+      "time": "12:30",
+      "label": "スタートへのバス輸送開始",
+      "category": "other",
+      "details": "会場から四方指展望台まで大会専用バス約15分。スタート時刻約50分前のバスに乗車。10分おきに運行",
+      "day": 1,
+      "applies_to": "all"
+    },
+    {
+      "time": "13:20",
+      "label": "トップスタート",
+      "category": "start",
+      "details": "ミドル・ディスタンス競技（日本ランキング対象大会）。競技時間90分",
+      "day": 1,
+      "applies_to": "all"
+    },
+    {
+      "time": "15:10",
+      "label": "スタート閉鎖",
+      "category": "other",
+      "details": null,
+      "day": 1,
+      "applies_to": "all"
+    },
+    {
+      "time": "16:00",
+      "label": "大会バス（会場→港）順次出発",
+      "category": "other",
+      "details": null,
+      "day": 1,
+      "applies_to": "all"
+    },
+    {
+      "time": "16:40",
+      "label": "フィニッシュ閉鎖",
+      "category": "finish",
+      "details": "競技終了後、バス乗り場（四方指展望台）まで徒歩で移動。地図回収あり（ミドルのみ出場の方は地図郵送希望可）",
+      "day": 1,
+      "applies_to": "all"
+    },
+    {
+      "time": "17:30",
+      "label": "会場閉場",
+      "category": "other",
+      "details": null,
+      "day": 1,
+      "applies_to": "all"
+    }
+  ],
+  "info": {
+    "access": "小豆島へは神戸港、姫路港、新岡山港、高松港のいずれかのフェリーを利用。会場は寒霞渓ロープウェイ山頂駅広場。自家用車: 土庄港より県道26号線・寒霞渓スカイライン経由で約18km/35分、坂手港より県道29号線経由で約20km/35分、福田港より県道246号線経由で約13km/25分。駐車場は11:30開放、無料、台数に限りあり（エントリー時に駐車場利用を希望した方のみ）。公共交通: 各港から路線バスで草壁港→寒霞渓無料シャトルバスで紅雲亭駅→寒霞渓ロープウェイで山頂駅→徒歩5分で会場。大会専用バスあり（片道1,000円、往復2,000円/日、事前申込制・締切済み）。Day1は土庄港・坂手港・福田港発着。ロープウェイ: 8:30-16:30営業（始発8:36・最終16:30）、12分間隔運行、大人往復2,160円・片道1,200円・一日乗車券3,000円、参加者限定10%割引あり（ロープウェイ・売店お土産品）",
+    "reception": "受付時間: 11:30〜。配布物: ナンバーカード（ゼッケン）1枚、レンタル用SIカード（申込者のみ）、ウォーミングアップエリア地図1枚。緊急連絡先をナンバーカードの裏に記載すること",
+    "start_procedure": "個人によるポイントオリエンテーリング（フォレストテレイン）。SPORTident社製電子パンチングシステムを使用。SIAC（タッチフリー）非対応。会場から四方指展望台まで大会専用バス約15分→ウォーミングアップエリア→スタート地区まで徒歩約15分。スタート枠3分前から入り、SIカードクリア→チェック→2分前枠でコントロール位置説明表受取→1分前枠で地図確認→出走。N,Bクラスのみ四方指展望台がスタート地区",
+    "courses": [
+      {"class": "M21E", "distance": "4.7 km", "climb": "250 m", "controls": 19, "first_start": "13:20"},
+      {"class": "W21E", "distance": "3.7 km", "climb": "205 m", "controls": 15, "first_start": "13:20"},
+      {"class": "M21A1", "distance": "3.9 km", "climb": "235 m", "controls": 16, "first_start": "13:20"},
+      {"class": "M21A2", "distance": "3.9 km", "climb": "215 m", "controls": 15, "first_start": "13:20"},
+      {"class": "M21AS", "distance": "2.6 km", "climb": "125 m", "controls": 10, "first_start": "13:20"},
+      {"class": "W21A", "distance": "3.0 km", "climb": "155 m", "controls": 12, "first_start": "13:20"},
+      {"class": "W21AS", "distance": "2.1 km", "climb": "115 m", "controls": 9, "first_start": "13:20"},
+      {"class": "M35A", "distance": "3.2 km", "climb": "180 m", "controls": 13, "first_start": "13:20"},
+      {"class": "W35A", "distance": "3.0 km", "climb": "155 m", "controls": 12, "first_start": "13:20"},
+      {"class": "M50A", "distance": "3.0 km", "climb": "155 m", "controls": 12, "first_start": "13:20"},
+      {"class": "W50A", "distance": "2.6 km", "climb": "125 m", "controls": 10, "first_start": "13:20"},
+      {"class": "M65A", "distance": "2.6 km", "climb": "125 m", "controls": 10, "first_start": "13:20"},
+      {"class": "W65A", "distance": "1.6 km", "climb": "80 m", "controls": 7, "first_start": "13:20"},
+      {"class": "M75A", "distance": "1.6 km", "climb": "80 m", "controls": 7, "first_start": "13:20"},
+      {"class": "M20A", "distance": "3.1 km", "climb": "130 m", "controls": 11, "first_start": "13:20"},
+      {"class": "W20A", "distance": "2.6 km", "climb": "130 m", "controls": 10, "first_start": "13:20"},
+      {"class": "M18A", "distance": "2.1 km", "climb": "115 m", "controls": 9, "first_start": "13:20"},
+      {"class": "W18A", "distance": "1.5 km", "climb": "105 m", "controls": 6, "first_start": "13:20"},
+      {"class": "M15A", "distance": "1.5 km", "climb": "105 m", "controls": 6, "first_start": "13:20"},
+      {"class": "MB,WB", "distance": "1.7 km", "climb": "35 m", "controls": 7, "first_start": "13:20"},
+      {"class": "N,G,W10", "distance": "1.6 km", "climb": "30 m", "controls": 7, "first_start": "13:20"}
+    ],
+    "equipment": "長袖・長ズボンの着用を推奨。ナンバーカードを胸部につけること。シューズの制限なし。笛の携行は必須。GPS機能を有するデバイスは地図表示機能がなくナビゲーション目的でなければ携行可。携帯電話・スマートフォンは競技中の使用禁止だが安全管理上携行を推奨（特に高齢者・初心者・子ども）。健康保険証を持参。SIカードレンタル: 400円。コンパスレンタル: 無料。競技中のテレイン内撮影（写真・動画）は許可するが、ロングスタート閉鎖まで地図や写真動画の閲覧・視聴・公開を禁止",
+    "emergency": "大会前日まで: shodoshima.orien@gmail.com / 大会当日: TEL 080-6368-6219（北見）",
+    "facilities": "青空会場（寒霞渓ロープウェイ山頂駅広場）。ペグ等使用不可。女子更衣室は雨天時荷物置き場の建物を利用。寒霞渓トイレ利用可（ピン付きシューズ着用時は利用禁止）。ウォームアップエリアはスタート輸送先（四方指展望台）付近に設置。託児所なし。寒霞渓ロープウェイ施設で飲食物販売あり。テレインには鹿・猪・猿など野生動物の生息あり（熊の目撃情報はなし）",
+    "food_and_bath": null
+  },
+  "start_walk_minutes": 15,
+  "notes": "日本ランキング対象大会（ミドル・ディスタンス）。地図: ミドル「四方指 - 神懸けし森 -」（調査期間2025年5月〜2026年3月）、2026年OLP兵庫新規作成、縮尺1:10000（一部クラス1:7500）、等高線間隔5m、ISOM2017-2準拠、ISCD2018準拠（B/N/G/M10/W10クラスは日本語表記）、地図サイズA4(1:10000)またはB4(1:7500)、ポリ袋に封入。特殊記号: ○は目立つ人工特徴物（炭焼き窯跡）。競技時間90分。優勝設定時間25〜40分。標高550-800mの高難易度テレイン。会場・テレインは標高600-750mに位置し、アメダス内海観測所と比べ気温は平均して約4度低い。大会中止時・参加者キャンセルの返金なし。事前申込のみ（当日申込なし）。一般参加費にはWMOC2027関西運営支援金500円/人を含む。成績速報はLap Center（mulka2.com/lapcenter/）に掲載。W75A,W15A,M10クラスは申込者なしのため廃止。M21E,W21Eは申込者多数のため上位110名を選考、選考に漏れた選手はM21Aに振替"
+}
