@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OスタCore 匿名サンプル</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --green: #15803d;
+  --green-bg: #ecfdf3;
+  --green-border: #bbf7d0;
+  --amber: #b45309;
+  --amber-bg: #fffbeb;
+  --amber-border: #fde68a;
+  --blue: #1d4ed8;
+  --blue-bg: #eff6ff;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-500: #64748b;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --gray-900: #0f172a;
+  --radius: 8px;
+}
+
+body {
+  background: var(--gray-50);
+  color: var(--gray-800);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans",
+               "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
+  line-height: 1.65;
+  margin: 0;
+}
+
+a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+a:hover { text-decoration: underline; }
+
+.page {
+  margin: 0 auto;
+  max-width: 1080px;
+  padding: 28px 16px 44px;
+}
+
+.top-link {
+  color: var(--gray-500);
+  display: inline-block;
+  font-size: 0.86rem;
+  margin-bottom: 18px;
+}
+
+.hero {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  color: var(--green);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 6px;
+}
+
+h1 {
+  color: var(--gray-900);
+  font-size: 1.86rem;
+  line-height: 1.25;
+  margin: 0 0 12px;
+}
+
+.lead {
+  color: var(--gray-600);
+  font-size: 0.98rem;
+  margin: 0;
+  max-width: 760px;
+}
+
+.status-strip {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.status-item {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+
+.status-item strong {
+  color: var(--gray-900);
+  display: block;
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+.status-item span {
+  color: var(--gray-500);
+  display: block;
+  font-size: 0.78rem;
+  margin-top: 4px;
+}
+
+.section {
+  border-top: 1px solid var(--gray-200);
+  padding: 24px 0;
+}
+
+.section h2 {
+  color: var(--gray-900);
+  font-size: 1.1rem;
+  margin: 0 0 12px;
+}
+
+.section p {
+  color: var(--gray-600);
+  margin: 0 0 14px;
+}
+
+.comparison {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+.comparison-item {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+
+.comparison-item h3 {
+  color: var(--gray-900);
+  font-size: 0.96rem;
+  margin: 0 0 6px;
+}
+
+.comparison-item p {
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.flow {
+  display: grid;
+  gap: 10px;
+}
+
+.flow-step {
+  align-items: start;
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 42px 1fr;
+  padding: 12px 14px;
+}
+
+.flow-number {
+  align-items: center;
+  background: var(--green-bg);
+  border: 1px solid var(--green-border);
+  border-radius: 999px;
+  color: var(--green);
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 700;
+  height: 32px;
+  justify-content: center;
+  width: 32px;
+}
+
+.flow-step strong {
+  color: var(--gray-900);
+  display: block;
+  font-size: 0.94rem;
+  margin-bottom: 2px;
+}
+
+.flow-step span {
+  color: var(--gray-600);
+  font-size: 0.88rem;
+}
+
+.notice {
+  background: var(--amber-bg);
+  border: 1px solid var(--amber-border);
+  border-radius: var(--radius);
+  color: var(--amber);
+  font-size: 0.9rem;
+  padding: 12px 14px;
+}
+
+.artifact-table {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  min-width: 720px;
+  width: 100%;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--gray-200);
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: var(--gray-100);
+  color: var(--gray-700);
+  font-size: 0.78rem;
+}
+
+td {
+  color: var(--gray-700);
+  font-size: 0.88rem;
+}
+
+tr:last-child td { border-bottom: 0; }
+
+code {
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: 5px;
+  color: var(--gray-900);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82em;
+  padding: 1px 5px;
+}
+
+pre {
+  background: var(--gray-900);
+  border-radius: var(--radius);
+  color: #e2e8f0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  margin: 0;
+  overflow-x: auto;
+  padding: 14px 16px;
+}
+
+pre code {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  padding: 0;
+}
+
+.checks {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr;
+}
+
+.check-item {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-left: 4px solid var(--green);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+
+.check-item.warn { border-left-color: var(--amber); }
+
+.check-item strong {
+  color: var(--gray-900);
+  display: block;
+  font-size: 0.92rem;
+}
+
+.check-item span {
+  color: var(--gray-600);
+  display: block;
+  font-size: 0.86rem;
+  margin-top: 3px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.text-link {
+  background: white;
+  border: 1px solid var(--gray-300);
+  border-radius: 6px;
+  color: var(--gray-800);
+  display: inline-flex;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 8px 12px;
+}
+
+.text-link.primary {
+  background: var(--blue-bg);
+  border-color: #bfdbfe;
+  color: var(--blue);
+}
+
+.footer {
+  color: var(--gray-500);
+  font-size: 0.82rem;
+  padding-top: 10px;
+}
+
+@media (min-width: 760px) {
+  .hero {
+    align-items: end;
+    grid-template-columns: minmax(0, 1.5fr) minmax(300px, 0.8fr);
+  }
+
+  .comparison,
+  .flow,
+  .checks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .status-strip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+</style>
+</head>
+<body>
+  <main class="page">
+    <a class="top-link" href="../">Oガイドに戻る</a>
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">OスタCore 匿名サンプル</div>
+        <h1>正本生成で見るべきものを、実名なしで確認するページ</h1>
+        <p class="lead">
+          OスタCoreは、ブラウザだけで試すOスタLiteとは別の考え方です。
+          JOY入力、イベント設定、補正履歴、日別スタートリスト、Mulka CSV、manifestをまとめて扱い、
+          大会運営で後から説明できる状態を作ります。
+        </p>
+      </div>
+
+      <div class="status-strip" aria-label="サンプルの集計">
+        <div class="status-item"><strong>14</strong><span>JOY風申込行</span></div>
+        <div class="status-item"><strong>16</strong><span>参加者</span></div>
+        <div class="status-item"><strong>20</strong><span>日別出走候補</span></div>
+        <div class="status-item"><strong>2</strong><span>日別出力</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Lite と Core の違い</h2>
+      <div class="comparison">
+        <div class="comparison-item">
+          <h3>OスタLite</h3>
+          <p>CSV確認と簡易下書きに向いたブラウザツールです。単日や小規模な試行には早く使えます。</p>
+        </div>
+        <div class="comparison-item">
+          <h3>OスタCore</h3>
+          <p>2日間、レーン、フリースタート、固定ゼッケン、補正履歴、警告、生成記録を残す正本生成の考え方です。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>生成の流れ</h2>
+      <div class="flow">
+        <div class="flow-step">
+          <span class="flow-number">01</span>
+          <div><strong>JOY風TSVを読む</strong><span>申込行と参加者を分けて把握します。</span></div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-number">02</span>
+          <div><strong>イベント設定を適用する</strong><span>日別、レーン、クラス順、フリースタート、ゼッケン開始番号を設定します。</span></div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-number">03</span>
+          <div><strong>補正と希望を記録する</strong><span>クラス変更や早め/遅め希望を設定ファイルに残します。</span></div>
+        </div>
+        <div class="flow-step">
+          <span class="flow-number">04</span>
+          <div><strong>出力と警告を残す</strong><span>公開リスト、Mulka CSV、manifestを生成し、取込前の警告を確認します。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>このサンプルで確認できること</h2>
+      <div class="checks">
+        <div class="check-item"><strong>日別出力</strong><span>Day1 10スタート、Day2 10スタートに分けています。</span></div>
+        <div class="check-item"><strong>複数レーン</strong><span>Lane 1 と Lane 2 で別々に時刻を進めます。</span></div>
+        <div class="check-item"><strong>固定ゼッケン</strong><span>2日間出る人やチームは同じ番号を維持します。</span></div>
+        <div class="check-item"><strong>補正履歴</strong><span>グループ内の1名だけをDay2に別クラスへ移す例を含みます。</span></div>
+        <div class="check-item warn"><strong>Mulka取込前警告</strong><span>レンタルカード未割当をDay1 3件、Day2 5件としてmanifestに残します。</span></div>
+        <div class="check-item warn"><strong>正本と下書きの分離</strong><span>これはOスタLiteを巨大化するためではなく、Coreの検証観点を見せるためのサンプルです。</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>ファイルを見る</h2>
+      <div class="artifact-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ファイル</th>
+              <th>役割</th>
+              <th>見るポイント</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="input/joy-entrylist-anonymous.tsv">input/joy-entrylist-anonymous.tsv</a></td>
+              <td>匿名のJOY風入力</td>
+              <td>2日間、レンタル、グループを含む最小入力</td>
+            </tr>
+            <tr>
+              <td><a href="config/sample-2days.yaml">config/sample-2days.yaml</a></td>
+              <td>イベント設定</td>
+              <td>日別、レーン、補正、スタート希望、Mulka列</td>
+            </tr>
+            <tr>
+              <td><a href="output/manifest.json">output/manifest.json</a></td>
+              <td>生成記録</td>
+              <td>入力、出力、件数、警告、エラーの有無</td>
+            </tr>
+            <tr>
+              <td><a href="output/startlist_day1.md">output/startlist_day1.md</a> / <a href="output/startlist_day2.md">day2.md</a></td>
+              <td>人間向け確認</td>
+              <td>レーン、クラス、No、スタート時刻</td>
+            </tr>
+            <tr>
+              <td><a href="output/mulka_day1.csv">output/mulka_day1.csv</a> / <a href="output/mulka_day2.csv">day2.csv</a></td>
+              <td>Mulka用CSV</td>
+              <td>カード番号未割当はmanifestの警告と合わせて確認</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="actions">
+        <a class="text-link primary" href="README.md">READMEを見る</a>
+        <a class="text-link" href="output/canonical_entries.csv">正規化CSVを見る</a>
+        <a class="text-link" href="../osta/">OスタLiteを開く</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>コマンド形</h2>
+      <p>現時点では実行CLI本体はこの公開リポジトリに含めていません。Core workflow が持つべき操作の形は次の通りです。</p>
+      <pre><code>python3 -m ol_startlist inspect core-sample/input/joy-entrylist-anonymous.tsv
+python3 -m ol_startlist summarize core-sample/input/joy-entrylist-anonymous.tsv --config core-sample/config/sample-2days.yaml
+python3 -m ol_startlist validate core-sample/input/joy-entrylist-anonymous.tsv --config core-sample/config/sample-2days.yaml
+python3 -m ol_startlist build core-sample/input/joy-entrylist-anonymous.tsv --config core-sample/config/sample-2days.yaml --output-dir core-sample/output</code></pre>
+    </section>
+
+    <footer class="footer">
+      このページのデータは公開説明用の匿名サンプルです。実大会の参加者情報やカード番号は含みません。
+    </footer>
+  </main>
+</body>
+</html>
