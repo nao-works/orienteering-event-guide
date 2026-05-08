@@ -2259,7 +2259,7 @@ function sampleJoyRows() {
     ['クラス', '所属', 'チーム名(氏名)', '氏名1', '氏名2', 'カード番号', 'IOF-ID', '性別', '生年月日'],
     ['ME', '架空クラブA', '', 'サンプル選手A', '', '900001', '', 'M', ''],
     ['ME', '架空クラブB', '', 'サンプル選手B', '', '', '', 'M', ''],
-    ['ME', '架空クラブC', '', 'サンプル選手C', '', '900001', '', 'M', ''],
+    ['ME', '架空クラブC', '', 'サンプル選手C', '', '900003', '', 'M', ''],
     ['WE', '架空クラブD', '', 'サンプル選手D', '', '900004', '', 'W', ''],
     ['WE', '架空クラブE', '', 'サンプル選手E', '', '', '', 'W', ''],
     ['チャレンジグループ', '架空クラブF', 'サンプルチームF', '', '', '', '', '', ''],
@@ -2364,33 +2364,23 @@ function renderScopeWarning() {
 
 function renderParticipantCheck(participants) {
   const check = analyzeParticipants(participants);
-  const warnings = [];
-  if (check.blankCards > 0) warnings.push(`カード番号未入力: ${check.blankCards}件`);
-  if (check.duplicateCards.length > 0) warnings.push(`同じカード番号: ${check.duplicateCards.length}組`);
-  if (check.duplicateNames.length > 0) warnings.push(`同名・同所属の可能性: ${check.duplicateNames.length}組`);
-  if (check.groupStarts > 0) warnings.push(`グループクラス: ${check.groupStarts}組`);
-
   const scopeWarning = renderScopeWarning();
-  const issueCount = warnings.length + (scopeWarning ? 1 : 0);
-  const summaryText = issueCount > 0
-    ? `読込 ${check.total}件 / 要確認 ${issueCount}`
+  const summaryText = scopeWarning
+    ? `読込 ${check.total}件 / 要確認 1`
     : `読込 ${check.total}件`;
 
   let html = '<details class="check-panel input-check">';
   html += `<summary class="check-panel-title">${escapeHtml(summaryText)}</summary>`;
   html += '<div class="check-grid">';
   html += `<div class="check-item"><strong>読取件数</strong><span>${check.total}件 / ${check.classTotal}クラス</span></div>`;
-  html += `<div class="check-item ${check.blankCards ? 'warn' : ''}"><strong>カード番号未入力</strong><span>${check.blankCards}件</span></div>`;
-  html += `<div class="check-item ${check.duplicateCards.length ? 'error' : ''}"><strong>同じカード番号</strong><span>${check.duplicateCards.length}組</span></div>`;
-  html += `<div class="check-item ${check.duplicateNames.length ? 'warn' : ''}"><strong>同名・同所属の可能性</strong><span>${check.duplicateNames.length}組</span></div>`;
+  html += `<div class="check-item"><strong>レンタル想定</strong><span>${check.blankCards}件</span></div>`;
+  if (check.groupStarts > 0) {
+    html += `<div class="check-item"><strong>グループ</strong><span>${check.groupStarts}組</span></div>`;
+  }
   html += '</div>';
-  if (warnings.length > 0 || scopeWarning) {
+  if (scopeWarning) {
     html += '<ul class="check-list">';
     html += scopeWarning;
-    warnings.forEach(w => { html += `<li>${escapeHtml(w)}</li>`; });
-    if (check.duplicateCards.length > 0) {
-      html += `<li>同じカード番号: ${escapeHtml(compactList(check.duplicateCards.map(g => g.key)))}</li>`;
-    }
     html += '</ul>';
   }
   html += '</details>';
@@ -4174,15 +4164,9 @@ function renderOutputCheck(entries) {
     ? `${check.firstStart} - ${check.lastStart}`
     : '未設定';
 
-  const warningItems = [];
-  if (check.blankCards > 0) warningItems.push(`カード番号未入力: ${check.blankCards}件`);
-  if (check.duplicateCards.length > 0) warningItems.push(`同じカード番号: ${check.duplicateCards.length}組`);
-  if (check.duplicateStartNumbers.length > 0) warningItems.push(`同じNo: ${check.duplicateStartNumbers.length}組`);
-  if (check.laneTimeConflicts.length > 0) warningItems.push(`同じレーン・同じ時刻: ${check.laneTimeConflicts.length}組`);
   const scopeWarning = renderScopeWarning();
-  const issueCount = warningItems.length + (scopeWarning ? 1 : 0);
-  const summaryText = issueCount > 0
-    ? `${check.total}件 / ${check.classTotal}クラス / 要確認 ${issueCount}`
+  const summaryText = scopeWarning
+    ? `${check.total}件 / ${check.classTotal}クラス / 要確認 1`
     : `${check.total}件 / ${check.classTotal}クラス`;
 
   let html = '<details class="check-panel output-check">';
@@ -4191,24 +4175,14 @@ function renderOutputCheck(entries) {
   html += `<div class="check-item"><strong>出走数</strong><span>${check.total}件 / ${check.classTotal}クラス</span></div>`;
   html += `<div class="check-item"><strong>スタート時刻</strong><span>${escapeHtml(timeText)}</span></div>`;
   html += `<div class="check-item"><strong>レーン</strong><span>${check.laneTotal}レーン</span></div>`;
+  html += `<div class="check-item"><strong>レンタル想定</strong><span>${check.blankCards}件</span></div>`;
   if (rankingCount > 0) {
     html += `<div class="check-item"><strong>ランキング</strong><span>${rankingCount}件</span></div>`;
   }
-  html += `<div class="check-item ${check.blankCards ? 'warn' : ''}"><strong>カード番号未入力</strong><span>${check.blankCards}件</span></div>`;
-  html += `<div class="check-item ${check.duplicateCards.length ? 'error' : ''}"><strong>同じカード番号</strong><span>${check.duplicateCards.length}組</span></div>`;
-  html += `<div class="check-item ${check.duplicateStartNumbers.length ? 'error' : ''}"><strong>同じNo</strong><span>${check.duplicateStartNumbers.length}組</span></div>`;
-  html += `<div class="check-item ${check.laneTimeConflicts.length ? 'error' : ''}"><strong>同時刻の重なり</strong><span>${check.laneTimeConflicts.length}組</span></div>`;
   html += '</div>';
-  if (warningItems.length > 0 || scopeWarning) {
+  if (scopeWarning) {
     html += '<ul class="check-list">';
     html += scopeWarning;
-    warningItems.forEach(w => { html += `<li>${escapeHtml(w)}</li>`; });
-    if (check.duplicateCards.length > 0) {
-      html += `<li>同じカード番号: ${escapeHtml(compactList(check.duplicateCards.map(g => g.key)))}</li>`;
-    }
-    if (check.laneTimeConflicts.length > 0) {
-      html += `<li>同じレーン・同じ時刻: ${escapeHtml(compactList(check.laneTimeConflicts.map(g => g.key)))}</li>`;
-    }
     html += '</ul>';
   }
   html += '</details>';
@@ -4508,13 +4482,11 @@ function downloadBlob(blob, filename) {
 }
 
 function buildDownloadWarnings() {
-  if (!currentEntries) return [];
-  const check = analyzeEntries(currentEntries);
   const warnings = [];
-  if (check.blankCards > 0) warnings.push(`カード番号未入力: ${check.blankCards}件`);
-  if (check.duplicateCards.length > 0) warnings.push(`同じカード番号: ${check.duplicateCards.length}組`);
-  if (check.duplicateStartNumbers.length > 0) warnings.push(`同じNo: ${check.duplicateStartNumbers.length}組`);
-  if (check.laneTimeConflicts.length > 0) warnings.push(`同じレーン・同じ時刻: ${check.laneTimeConflicts.length}組`);
+  if (currentParseMeta && currentParseMeta.hasDayColumns) {
+    const days = currentParseMeta.dayLabels.length ? `（${currentParseMeta.dayLabels.join(' / ')}）` : '';
+    warnings.push(`Day1/Day2項目${days}を含むデータです。Oスタは日別の参加を分けません。`);
+  }
   return warnings;
 }
 
@@ -4561,9 +4533,7 @@ function buildCheckMemo() {
   lines.push('読込後の確認');
   lines.push(`- 読取件数: ${participantCheck.total}件`);
   lines.push(`- クラス数: ${participantCheck.classTotal}`);
-  lines.push(`- カード番号未入力: ${participantCheck.blankCards}件`);
-  lines.push(`- 同じカード番号: ${participantCheck.duplicateCards.length}組`);
-  lines.push(`- 同名・同所属の可能性: ${participantCheck.duplicateNames.length}組`);
+  lines.push(`- レンタル想定: ${participantCheck.blankCards}件`);
   lines.push(`- グループクラス: ${participantCheck.groupStarts}組`);
   if (currentParseMeta && currentParseMeta.hasDayColumns) {
     const days = currentParseMeta.dayLabels.length ? `（${currentParseMeta.dayLabels.join(' / ')}）` : '';
@@ -4583,16 +4553,7 @@ function buildCheckMemo() {
   lines.push(`- クラス数: ${entryCheck.classTotal}`);
   lines.push(`- レーン数: ${entryCheck.laneTotal}`);
   lines.push(`- スタート時刻: ${entryCheck.firstStart || ''} - ${entryCheck.lastStart || ''}`);
-  lines.push(`- カード番号未入力: ${entryCheck.blankCards}件`);
-  lines.push(`- 同じカード番号: ${entryCheck.duplicateCards.length}組`);
-  lines.push(`- 同じNo: ${entryCheck.duplicateStartNumbers.length}組`);
-  lines.push(`- 同じレーン・同じ時刻: ${entryCheck.laneTimeConflicts.length}組`);
-  if (entryCheck.duplicateCards.length > 0) {
-    lines.push(`- 同じカード番号の一覧: ${entryCheck.duplicateCards.map(g => g.key).join('、')}`);
-  }
-  if (entryCheck.laneTimeConflicts.length > 0) {
-    lines.push(`- 同じレーン・同じ時刻の一覧: ${entryCheck.laneTimeConflicts.map(g => g.key).join('、')}`);
-  }
+  lines.push(`- レンタル想定: ${entryCheck.blankCards}件`);
   lines.push('');
   lines.push('確認事項');
   lines.push('- 公開前に、氏名、所属、カード番号、クラス設定を確認する。');
