@@ -1192,28 +1192,27 @@ body.edit-mode #editModeBtn {
   <!-- Settings -->
   <div class="card compact no-print hidden" id="settingsCard">
     <details class="settings-details" id="settingsDetails" open>
-      <summary>生成設定</summary>
+      <summary>スタート設定</summary>
     <div class="settings-grid">
       <div class="form-group">
-        <label for="startTime">スタート時刻</label>
+        <label for="startTime">開始</label>
         <input type="time" id="startTime" value="10:00" step="1">
       </div>
       <div class="form-group">
-        <label for="interval">スタート間隔（秒）</label>
+        <label for="interval">間隔（秒）</label>
         <input type="number" id="interval" value="60" min="1" max="600">
       </div>
       <div class="form-group">
-        <label for="classGap">クラス間ギャップ（秒）</label>
+        <label for="classGap">クラス間（秒）</label>
         <input type="number" id="classGap" value="120" min="0" max="1800">
       </div>
       <div class="form-group">
-        <label for="seed">ランダムシード（空欄 = ランダム）</label>
-        <input type="number" id="seed" placeholder="任意の整数">
+        <label for="seed">並び固定</label>
+        <input type="number" id="seed" placeholder="空欄で毎回変更">
       </div>
       <div class="form-group">
-        <label for="laneCount">レーン数</label>
+        <label for="laneCount">レーン</label>
         <input type="number" id="laneCount" value="1" min="1" max="20">
-        <span class="hint">複数レーンで並行スタートする場合は2以上を指定</span>
       </div>
       <div class="form-group full-width hidden">
         <div class="column-toggles" id="columnToggles">
@@ -1280,7 +1279,7 @@ body.edit-mode #editModeBtn {
     <div class="btn-group no-print">
       <button class="btn btn-outline" id="printBtn" title="PDF保存 / 印刷">PDF</button>
       <button class="btn btn-outline" id="downloadCheckMemo" title="集計メモをダウンロード">集計</button>
-      <button class="btn btn-outline" id="downloadMulka" title="Mulkaたたき台CSV">Mulka</button>
+      <button class="btn btn-outline" id="downloadMulka" title="Mulka補助CSV">Mulka</button>
       <button class="btn btn-outline" id="editModeBtn">並び替え</button>
       <button class="btn btn-outline" id="resetOrderBtn" title="全クラスの並び順をリセット">リセット</button>
       <button class="btn btn-outline" id="wreRankingBtn" title="ME/WEをランキング順にする" style="display:none;">WRE</button>
@@ -1333,6 +1332,10 @@ function shuffle(arr, rng) {
  * Detect encoding from raw ArrayBuffer and decode to string.
  * Returns { text, separator }.
  */
+function detectSeparator(text) {
+  return text.includes('\t') ? '\t' : ',';
+}
+
 function decodeFile(buffer) {
   const bytes = new Uint8Array(buffer);
 
@@ -1341,12 +1344,12 @@ function decodeFile(buffer) {
     if (bytes[0] === 0xFF && bytes[1] === 0xFE) {
       // UTF-16 LE
       const text = new TextDecoder('utf-16le').decode(buffer);
-      return { text, separator: '\t' };
+      return { text, separator: detectSeparator(text) };
     }
     if (bytes[0] === 0xFE && bytes[1] === 0xFF) {
       // UTF-16 BE
       const text = new TextDecoder('utf-16be').decode(buffer);
-      return { text, separator: '\t' };
+      return { text, separator: detectSeparator(text) };
     }
   }
 
@@ -1364,17 +1367,25 @@ function decodeFile(buffer) {
     }
   }
 
+  // Try UTF-8 before Shift_JIS so UTF-8 TSV exports keep their headers intact.
+  try {
+    const text = new TextDecoder('utf-8', { fatal: true }).decode(buffer);
+    return { text, separator: detectSeparator(text) };
+  } catch (e) {
+    // Ignore
+  }
+
   // Try Shift_JIS (cp932)
   try {
     const text = new TextDecoder('shift_jis', { fatal: true }).decode(buffer);
-    return { text, separator: ',' };
+    return { text, separator: detectSeparator(text) };
   } catch (e) {
     // Ignore
   }
 
   // Fall back to UTF-8
   const text = new TextDecoder('utf-8').decode(buffer);
-  return { text, separator: ',' };
+  return { text, separator: detectSeparator(text) };
 }
 
 /**
@@ -1479,10 +1490,37 @@ function isOnePerRowFormat(categories) {
   const personRe = /^(\d+)人目$/;
   let maxSlot = 0;
   for (const cat of categories) {
-    const m = cat.match(personRe);
+    const m = normalizeJoyFieldName(cat).match(personRe);
     if (m) maxSlot = Math.max(maxSlot, parseInt(m[1]));
   }
   return maxSlot <= 1;
+}
+
+function normalizeJoyFieldName(fieldName) {
+  const key = String(fieldName || '').replace(/\s|\u3000/g, '').replace(/（/g, '(').replace(/）/g, ')');
+  const aliases = {
+    '参加クラス': 'クラス',
+    '申込クラス': 'クラス',
+    '所属名': '所属',
+    'クラブ': '所属',
+    'クラブ名': '所属',
+    'チーム名': 'チーム名(氏名)',
+    '組名': 'チーム名(氏名)',
+    '氏名': '氏名1',
+    '名前': '氏名1',
+    'ふりがな': '氏名2',
+    'フリガナ': '氏名2',
+    '氏名ふりがな': '氏名2',
+    'SIカード番号': 'カード番号',
+    'SI番号': 'カード番号',
+    'SIAC番号': 'カード番号',
+    'Eカード番号': 'カード番号',
+    '電子カード番号': 'カード番号',
+    'IOFID': 'IOF-ID',
+    'IOF番号': 'IOF-ID',
+    'IOFNo': 'IOF-ID',
+  };
+  return aliases[key] || key;
 }
 
 function findPersonSlots(categories, columns) {
@@ -1490,7 +1528,7 @@ function findPersonSlots(categories, columns) {
   const slotColumns = {}; // slot_number -> [{colIdx, fieldName}]
 
   for (let i = 0; i < categories.length; i++) {
-    const m = categories[i].match(personRe);
+    const m = normalizeJoyFieldName(categories[i]).match(personRe);
     if (m) {
       const slotNum = parseInt(m[1]);
       if (!slotColumns[slotNum]) slotColumns[slotNum] = [];
@@ -1504,7 +1542,8 @@ function findPersonSlots(categories, columns) {
   for (const slotNum of sortedKeys) {
     const fieldMap = {};
     for (const { colIdx, fieldName } of slotColumns[slotNum]) {
-      fieldMap[fieldName] = colIdx;
+      const key = normalizeJoyFieldName(fieldName);
+      if (!(key in fieldMap)) fieldMap[key] = colIdx;
     }
     slots.push(fieldMap);
   }
@@ -1514,8 +1553,8 @@ function findPersonSlots(categories, columns) {
 function findTeamFields(categories, columns) {
   const teamFields = {};
   for (let i = 0; i < categories.length; i++) {
-    if (categories[i] === 'チーム(組)') {
-      const col = i < columns.length ? columns[i] : '';
+    if (normalizeJoyFieldName(categories[i]) === 'チーム(組)') {
+      const col = normalizeJoyFieldName(i < columns.length ? columns[i] : '');
       if (!(col in teamFields)) {
         teamFields[col] = i;
       }
@@ -4493,9 +4532,9 @@ function buildDownloadWarnings() {
 function confirmMulkaDownload() {
   const warnings = buildDownloadWarnings();
   const lines = [
-    'Mulkaたたき台CSVをダウンロードします。',
+    'Mulka補助CSVをダウンロードします。',
     '',
-    'Mulkaに取り込む前に、入力データ、カード番号、クラス設定、スタート時刻を確認してください。',
+    '取込前に、レンタルカード割当とMulka側のクラス設定を確認してください。',
   ];
   if (warnings.length > 0) {
     lines.push('', '気になる点:', ...warnings.map(w => `・${w}`));
@@ -4541,23 +4580,23 @@ function buildCheckMemo() {
   }
   lines.push('');
   lines.push('生成条件');
-  lines.push(`- スタート時刻: ${options.startTime || ''}`);
-  lines.push(`- スタート間隔: ${options.interval || ''}秒`);
-  lines.push(`- クラス間ギャップ: ${options.classGap || ''}秒`);
-  lines.push(`- レーン数: ${options.laneCount || ''}`);
-  lines.push(`- ランダムシード: ${options.seed || ''}`);
+  lines.push(`- 開始: ${options.startTime || ''}`);
+  lines.push(`- 間隔: ${options.interval || ''}秒`);
+  lines.push(`- クラス間: ${options.classGap || ''}秒`);
+  lines.push(`- レーン: ${options.laneCount || ''}`);
+  lines.push(`- 並び固定: ${options.seed || ''}`);
   lines.push(`- ランキングデータ: ${options.rankings && options.rankings.length ? options.rankings.length + '件読み込み済み' : 'なし'}`);
   lines.push('');
   lines.push('出力前チェック');
   lines.push(`- 出走数: ${entryCheck.total}件`);
   lines.push(`- クラス数: ${entryCheck.classTotal}`);
-  lines.push(`- レーン数: ${entryCheck.laneTotal}`);
+  lines.push(`- レーン: ${entryCheck.laneTotal}`);
   lines.push(`- スタート時刻: ${entryCheck.firstStart || ''} - ${entryCheck.lastStart || ''}`);
   lines.push(`- レンタル想定: ${entryCheck.blankCards}件`);
   lines.push('');
   lines.push('確認事項');
   lines.push('- 公開前に、氏名、所属、カード番号、クラス設定を確認する。');
-  lines.push('- Mulkaたたき台を使う場合は、Mulka取込前に設定と時刻を確認する。');
+  lines.push('- Mulka補助CSVを使う場合は、レンタルカード割当とMulka側のクラス設定を確認する。');
   lines.push('- 正式な大会運営で使う場合は、入力ファイルが確定版か確認する。');
   lines.push('');
 
