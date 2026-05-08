@@ -609,6 +609,28 @@ html { overscroll-behavior: none; }
   margin-top: 4px;
 }
 
+.notice-card {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: var(--radius);
+  color: #7c2d12;
+  font-size: 0.78rem;
+  line-height: 1.7;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+.notice-card strong {
+  display: block;
+  font-size: 0.8rem;
+  margin-bottom: 2px;
+}
+
+.notice-card a {
+  color: #9a3412;
+  font-weight: 600;
+}
+
 .status-dot {
   display: inline-block;
   width: 8px;
@@ -693,6 +715,11 @@ html { overscroll-behavior: none; }
 
   <!-- Content Area -->
   <div class="content" id="content">
+    <div class="notice-card">
+      <strong>実験公開中</strong>
+      Oガイドは大会情報の見え方を試すためのページです。更新頻度は保証していません。参加や運営の判断には、主催者の公式情報を確認してください。スタートリスト作成の下書きには <a href="https://osta.pages.dev/" target="_blank" rel="noopener">Oスタ</a> を使ってください。
+    </div>
+
     <!-- Tab: タイムライン -->
     <div class="tab-panel active" id="tab-timeline">
       <div id="timeline-content">
