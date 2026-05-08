@@ -1,0 +1,21 @@
+﻿Day,Class,Name,Club,CardNumber,CardMode,StartType,SourceID,IsGroup,ParticipantCount,Members,Notes
+day1,M21A,Runner A01,North OC,800001,マイSI持参,interval,S001,0,1,Runner A01,
+day2,M21A,Runner A01,North OC,800001,マイSI持参,interval,S001,0,1,Runner A01,
+day1,M21A,Runner A02,North OC,800002,マイSI持参,interval,S002,0,1,Runner A02,Day1 late-start request
+day1,W21A,Runner A03,East OC,800003,マイSI持参,interval,S003,0,1,Runner A03,
+day2,W21A,Runner A03,East OC,800003,マイSI持参,interval,S003,0,1,Runner A03,Day2 early-start request
+day2,M50A,Runner A04,West OC,,Day2レンタル,interval,S004,0,1,Runner A04,
+day1,W50A,Runner A05,South OC,,2日間レンタル,interval,S005,0,1,Runner A05,
+day2,W50A,Runner A05,South OC,,2日間レンタル,interval,S005,0,1,Runner A05,
+day1,M35A,Runner A06,Lake OC,800006,マイSI持参,interval,S006,0,1,Runner A06,
+day2,W35A,Runner A07,Hill OC,800007,マイSI持参,interval,S007,0,1,Runner A07,
+day1,ライトソロ,Runner A08,Trail OC,,Day1レンタル,free,S008,0,1,Runner A08,
+day2,ライトソロ,Runner A09,Trail OC,,Day2レンタル,free,S009,0,1,Runner A09,
+day1,チャレンジソロ,Runner A10,River OC,800010,マイSI持参,interval,S010,0,1,Runner A10,
+day2,チャレンジソロ,Runner A10,River OC,800010,マイSI持参,interval,S010,0,1,Runner A10,
+day2,ライトグループ,Team Forest,Forest OC,,Day2レンタル,free,S011,1,1,Runner A11,member removed: Runner A12
+day2,W50A,Runner A12,Forest OC,,Day2レンタル,interval,S011,0,1,Runner A12,Day2 only class correction from group to W50A
+day1,チャレンジグループ,Team Meadow,Meadow OC,,Day1レンタル,interval,S012,1,2,Runner A13 / Runner A14,
+day1,M21A,Runner A15,East OC,800015,マイSI持参,interval,S013,0,1,Runner A15,
+day2,M21A,Runner A15,East OC,800015,マイSI持参,interval,S013,0,1,Runner A15,
+day1,W21A,Runner A16,West OC,800016,マイSI持参,interval,S014,0,1,Runner A16,

@@ -1,0 +1,11 @@
+﻿Day,Lane,Class,No,Start,Name,Kana,Club,CardNumber,CardMode,StartType,SourceID,Group,ParticipantCount,Members,Notes
+day2,Lane 1,W21A,102,10:00:00,Runner A03,A03,East OC,800003,マイSI持参,interval,S003,0,1,Runner A03,Day2 early-start request
+day2,Lane 1,M21A,105,10:02:00,Runner A01,A01,North OC,800001,マイSI持参,interval,S001,0,1,Runner A01,
+day2,Lane 1,M21A,103,10:03:00,Runner A15,A15,East OC,800015,マイSI持参,interval,S013,0,1,Runner A15,
+day2,Lane 2,チャレンジソロ,203,10:00:00,Runner A10,A10,River OC,800010,マイSI持参,interval,S010,0,1,Runner A10,
+day2,Lane 2,W50A,204,10:02:00,Runner A05,A05,South OC,,2日間レンタル,interval,S005,0,1,Runner A05,
+day2,Lane 2,W50A,208,10:03:00,Runner A12,A12,Forest OC,,Day2レンタル,interval,S011,0,1,Runner A12,Day2 only class correction from group to W50A
+day2,Lane 2,M50A,209,10:05:00,Runner A04,A04,West OC,,Day2レンタル,interval,S004,0,1,Runner A04,
+day2,Lane 2,W35A,210,10:07:00,Runner A07,A07,Hill OC,800007,マイSI持参,interval,S007,0,1,Runner A07,
+day2,Lane 2,ライトグループ,206,free,Team Forest,,Forest OC,,Day2レンタル,free,S011,1,1,Runner A11,member removed: Runner A12
+day2,Lane 2,ライトソロ,207,free,Runner A09,A09,Trail OC,,Day2レンタル,free,S009,0,1,Runner A09,

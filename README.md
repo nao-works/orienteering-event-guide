@@ -18,6 +18,8 @@ Oガイド/Oスタは公開ブラウザツールです。とくに Oスタは、
 
 詳しくは [docs/startlist-tooling.md](docs/startlist-tooling.md) を参照してください。
 
+正本生成の考え方を示す匿名サンプルは [core-sample/](core-sample/) に置いています。実名の参加者データは含みません。
+
 ## ツールの役割
 
 | ツール | 役割 | 向いている用途 |
@@ -48,4 +50,5 @@ wrangler deploy
 
 - Oガイドのイベントデータは `data/` に置きます。
 - Oスタのランキングキャッシュは `osta/data/` に置きます。
+- OスタCore の匿名サンプルは `core-sample/` に置きます。
 - Cloudflare / Wrangler のローカルキャッシュ `.wrangler/` は repo に入れません。

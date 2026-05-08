@@ -1,0 +1,115 @@
+event: anonymous_2days_sample
+
+input:
+  format: joy
+
+days:
+  day1:
+    label: Day1
+    aliases: ["Day1"]
+    first_start: "10:30"
+  day2:
+    label: Day2
+    aliases: ["Day2"]
+    first_start: "10:00"
+
+all_days_patterns:
+  - 2日間
+
+group_class_patterns:
+  - グループ
+
+free_start_classes:
+  - ライトソロ
+  - ライトグループ
+
+class_order:
+  - W21A
+  - M21A
+  - ライトグループ
+  - ライトソロ
+  - チャレンジグループ
+  - チャレンジソロ
+  - W50A
+  - M50A
+  - W35A
+  - M35A
+
+lanes:
+  day1:
+    - id: lane1
+      label: Lane 1
+      first_start: "10:30"
+      class_order:
+        - W21A
+        - M21A
+    - id: lane2
+      label: Lane 2
+      first_start: "10:30"
+      class_order:
+        - ライトグループ
+        - ライトソロ
+        - チャレンジグループ
+        - チャレンジソロ
+        - W50A
+        - M50A
+        - W35A
+        - M35A
+  day2:
+    - id: lane1
+      label: Lane 1
+      first_start: "10:00"
+      class_order:
+        - W21A
+        - M21A
+    - id: lane2
+      label: Lane 2
+      first_start: "10:00"
+      class_order:
+        - ライトグループ
+        - ライトソロ
+        - チャレンジグループ
+        - チャレンジソロ
+        - W50A
+        - M50A
+        - W35A
+        - M35A
+
+interval_seconds: 60
+class_gap_seconds: 120
+seed: 202605
+
+bib_numbers:
+  lanes:
+    Lane 1: 101
+    Lane 2: 201
+
+corrections:
+  - id: "S011"
+    action: split_group_member_to_class
+    day: day2
+    member_name: "Runner A12"
+    from_class: ライトグループ
+    to_class: W50A
+    note: Day2 only class correction from group to W50A
+
+start_preferences:
+  - id: "S002"
+    day: day1
+    preference: late
+    note: Day1 late-start request
+  - id: "S003"
+    day: day2
+    preference: early
+    note: Day2 early-start request
+
+mulka:
+  encoding: utf-8-sig
+  free_start_time: ""
+  columns:
+    - Class
+    - StartNumber
+    - Name
+    - Club
+    - StartTime
+    - CardNumber

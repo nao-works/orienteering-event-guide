@@ -1,0 +1,89 @@
+{
+  "event": "anonymous_2days_sample",
+  "generated_at": "2026-05-08T11:16:36.775615+00:00",
+  "input": {
+    "path": "core-sample/input/joy-entrylist-anonymous.tsv",
+    "format": "joy",
+    "encoding": "utf-16",
+    "separator": "tab",
+    "header_rows": 2,
+    "rows": 14,
+    "participants": 16,
+    "columns": 31
+  },
+  "config": "core-sample/config/sample-2days.yaml",
+  "output_dir": "core-sample/output",
+  "canonical_entries": "core-sample/output/canonical_entries.csv",
+  "candidate_count": 20,
+  "selected_days": [
+    "day1",
+    "day2"
+  ],
+  "days": {
+    "day1": {
+      "starts": 10,
+      "people": 11,
+      "lanes": {
+        "Lane 1": 5,
+        "Lane 2": 5
+      },
+      "classes": {
+        "W21A": 2,
+        "M21A": 3,
+        "チャレンジグループ": 1,
+        "チャレンジソロ": 1,
+        "W50A": 1,
+        "M35A": 1,
+        "ライトソロ": 1
+      },
+      "blank_cards": 3,
+      "free_starts": 1,
+      "errors": [],
+      "warnings": [
+        {
+          "stage": "mulka-import",
+          "message": "rental entries with blank card number: 3"
+        }
+      ]
+    },
+    "day2": {
+      "starts": 10,
+      "people": 10,
+      "lanes": {
+        "Lane 1": 3,
+        "Lane 2": 7
+      },
+      "classes": {
+        "W21A": 1,
+        "M21A": 2,
+        "チャレンジソロ": 1,
+        "W50A": 2,
+        "M50A": 1,
+        "W35A": 1,
+        "ライトグループ": 1,
+        "ライトソロ": 1
+      },
+      "blank_cards": 5,
+      "free_starts": 2,
+      "errors": [],
+      "warnings": [
+        {
+          "stage": "mulka-import",
+          "message": "rental entries with blank card number: 5"
+        }
+      ]
+    }
+  },
+  "outputs": {
+    "day1": {
+      "public_csv": "core-sample/output/startlist_day1.csv",
+      "public_markdown": "core-sample/output/startlist_day1.md",
+      "mulka_csv": "core-sample/output/mulka_day1.csv"
+    },
+    "day2": {
+      "public_csv": "core-sample/output/startlist_day2.csv",
+      "public_markdown": "core-sample/output/startlist_day2.md",
+      "mulka_csv": "core-sample/output/mulka_day2.csv"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+﻿Class,StartNumber,Name,Club,StartTime,CardNumber
+W21A,101,Runner A16,West OC,10:30:00,800016
+W21A,102,Runner A03,East OC,10:31:00,800003
+M21A,103,Runner A15,East OC,10:33:00,800015
+M21A,105,Runner A01,North OC,10:34:00,800001
+M21A,104,Runner A02,North OC,10:35:00,800002
+チャレンジグループ,202,Team Meadow,Meadow OC,10:30:00,
+チャレンジソロ,203,Runner A10,River OC,10:32:00,800010
+W50A,204,Runner A05,South OC,10:34:00,
+M35A,205,Runner A06,Lake OC,10:36:00,800006
+ライトソロ,201,Runner A08,Trail OC,,
