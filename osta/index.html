@@ -227,6 +227,71 @@ body {
   font-weight: 600;
 }
 
+/* ========== Check Panels ========== */
+.check-panel {
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  color: var(--gray-700);
+  margin-top: 14px;
+  padding: 14px 16px;
+}
+
+.check-panel-title {
+  color: var(--gray-900);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.check-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .check-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.check-item {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.check-item strong {
+  color: var(--gray-900);
+  display: block;
+  font-size: 0.78rem;
+  margin-bottom: 2px;
+}
+
+.check-item span {
+  font-size: 0.88rem;
+}
+
+.check-item.warn {
+  background: #fff7ed;
+  border-color: #fed7aa;
+  color: #9a3412;
+}
+
+.check-item.error {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+.check-list {
+  margin: 10px 0 0 18px;
+}
+
+.check-list li {
+  margin: 3px 0;
+}
+
 /* ========== Settings ========== */
 .settings-grid {
   display: grid;
@@ -1089,6 +1154,7 @@ body {
     <div class="card-title no-print">スタートリスト</div>
     <div class="btn-group no-print">
       <button class="btn btn-outline" id="downloadMulka">Mulka2 CSV ダウンロード</button>
+      <button class="btn btn-outline" id="downloadCheckMemo">確認用メモ ダウンロード</button>
       <div>
         <button class="btn btn-outline" id="printBtn">PDF保存 / 印刷</button>
         <div class="print-hint">ブラウザの印刷ダイアログで「PDFに保存」を選択できます</div>
@@ -1103,6 +1169,7 @@ body {
         </div>
       </div>
     </div>
+    <div id="outputCheck" class="check-panel no-print hidden"></div>
     <div id="startlistOutput"></div>
   </div>
 </div>
@@ -1905,6 +1972,8 @@ let loadedRankings = []; // Array of loaded ranking JSON objects
 let currentEntries = null;
 let originalEntries = null; // for reset
 let generationDate = null;
+let currentFileInfo = null;
+let lastGenerationOptions = null;
 
 const $ = id => document.getElementById(id);
 
@@ -1921,6 +1990,7 @@ const generateSection = $('generateSection');
 const generateBtn = $('generateBtn');
 const resultCard = $('resultCard');
 const classOrderList = $('classOrderList');
+const outputCheckEl = $('outputCheck');
 
 dropzone.addEventListener('click', () => fileInput.click());
 
@@ -1959,6 +2029,11 @@ function formatFileSize(bytes) {
 }
 
 function handleFile(file) {
+  currentFileInfo = {
+    name: file.name,
+    size: file.size,
+    loadedAt: new Date().toISOString(),
+  };
   fileNameEl.textContent = file.name;
   fileMetaEl.textContent = formatFileSize(file.size);
   fileInfoEl.classList.remove('hidden');
@@ -2002,6 +2077,7 @@ function showParseSuccess(total, classCounts) {
     html += `<span class="class-badge"><span class="class-label">${escapeHtml(cls)}</span> <span class="count">${count}</span></span>`;
   }
   html += '</div>';
+  html += renderParticipantCheck(currentParticipants);
   parseResultEl.innerHTML = html;
 }
 
@@ -2009,6 +2085,95 @@ function showParseError(msg) {
   parseResultEl.className = 'parse-result error';
   parseResultEl.classList.remove('hidden');
   parseResultEl.textContent = msg;
+}
+
+function addCount(map, key) {
+  map[key] = (map[key] || 0) + 1;
+}
+
+function groupedDuplicates(items, keyFn, labelFn) {
+  const groups = new Map();
+  for (const item of items) {
+    const key = keyFn(item);
+    if (!key) continue;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(labelFn(item));
+  }
+  return [...groups.entries()]
+    .filter(([, labels]) => labels.length > 1)
+    .map(([key, labels]) => ({ key, labels }));
+}
+
+function compactList(items, limit = 4) {
+  if (!items || items.length === 0) return '';
+  const shown = items.slice(0, limit).join('、');
+  const rest = items.length > limit ? `、ほか${items.length - limit}件` : '';
+  return shown + rest;
+}
+
+function participantLabel(p) {
+  return `${p.className || 'クラス未設定'} / ${p.name || p.teamName || '氏名未設定'}${p.club ? ' / ' + p.club : ''}`;
+}
+
+function analyzeParticipants(participants) {
+  const classCounts = {};
+  let blankCards = 0;
+  let groupStarts = 0;
+
+  for (const p of participants || []) {
+    addCount(classCounts, p.className || 'クラス未設定');
+    if (!String(p.cardNumber || '').trim()) blankCards++;
+    if (p.isGroup) groupStarts++;
+  }
+
+  const duplicateCards = groupedDuplicates(
+    participants || [],
+    p => String(p.cardNumber || '').trim(),
+    participantLabel
+  );
+  const duplicateNames = groupedDuplicates(
+    participants || [],
+    p => `${String(p.name || p.teamName || '').replace(/\s|\u3000/g, '')}|${String(p.club || '').replace(/\s|\u3000/g, '')}`,
+    participantLabel
+  ).filter(group => group.key.split('|')[0]);
+
+  return {
+    total: (participants || []).length,
+    classCounts,
+    classTotal: Object.keys(classCounts).length,
+    blankCards,
+    groupStarts,
+    duplicateCards,
+    duplicateNames,
+  };
+}
+
+function renderParticipantCheck(participants) {
+  const check = analyzeParticipants(participants);
+  const warnings = [];
+  if (check.blankCards > 0) warnings.push(`カード番号未入力: ${check.blankCards}件`);
+  if (check.duplicateCards.length > 0) warnings.push(`同じカード番号: ${check.duplicateCards.length}組`);
+  if (check.duplicateNames.length > 0) warnings.push(`同名・同所属の可能性: ${check.duplicateNames.length}組`);
+  if (check.groupStarts > 0) warnings.push(`グループクラス: ${check.groupStarts}組`);
+
+  let html = '<div class="check-panel">';
+  html += '<div class="check-panel-title">読込後の確認</div>';
+  html += '<div class="check-grid">';
+  html += `<div class="check-item"><strong>人数</strong><span>${check.total}名 / ${check.classTotal}クラス</span></div>`;
+  html += `<div class="check-item ${check.blankCards ? 'warn' : ''}"><strong>カード番号未入力</strong><span>${check.blankCards}件</span></div>`;
+  html += `<div class="check-item ${check.duplicateCards.length ? 'error' : ''}"><strong>同じカード番号</strong><span>${check.duplicateCards.length}組</span></div>`;
+  html += `<div class="check-item ${check.duplicateNames.length ? 'warn' : ''}"><strong>同名・同所属の可能性</strong><span>${check.duplicateNames.length}組</span></div>`;
+  html += '</div>';
+  if (warnings.length > 0) {
+    html += '<ul class="check-list">';
+    warnings.forEach(w => { html += `<li>${escapeHtml(w)}</li>`; });
+    if (check.duplicateCards.length > 0) {
+      html += `<li>同じカード番号: ${escapeHtml(compactList(check.duplicateCards.map(g => g.key)))}</li>`;
+    }
+    html += '</ul>';
+  }
+  html += '</div>';
+  return html;
 }
 
 function resetUI() {
@@ -2023,7 +2188,10 @@ function resetUI() {
   splitState = {};
   currentEntries = null;
   originalEntries = null;
+  currentFileInfo = null;
+  lastGenerationOptions = null;
   loadedRankings = [];
+  if (outputCheckEl) outputCheckEl.classList.add('hidden');
 }
 
 function escapeHtml(s) {
@@ -2568,6 +2736,22 @@ function generate() {
   const classOrder = getClassOrder();
   const laneCount = getLaneCount();
   const laneAssignments = getClassLaneAssignments();
+  lastGenerationOptions = {
+    generatedAt: new Date().toISOString(),
+    startTime,
+    interval,
+    classGap,
+    seed: seedVal !== '' ? seedVal : 'ランダム',
+    classOrder,
+    laneCount,
+    rankings: loadedRankings.map(r => ({
+      source: r.source,
+      discipline: r.discipline,
+      gender: r.gender,
+      date: r.date,
+      athletes: r.athletes ? r.athletes.length : 0,
+    })),
+  };
 
   currentEntries = generateStartList(currentParticipants, {
     startTime,
@@ -3702,6 +3886,91 @@ function renderStartList(entries) {
       showRankingModal(btn.dataset.rankingClass);
     });
   });
+
+  renderOutputCheck(entries);
+}
+
+function analyzeEntries(entries) {
+  const classCounts = {};
+  const laneCounts = {};
+  const startTimes = [];
+  let blankCards = 0;
+
+  for (const e of entries || []) {
+    addCount(classCounts, e.className || 'クラス未設定');
+    addCount(laneCounts, String(e.lane || 1));
+    if (!String(e.cardNumber || '').trim()) blankCards++;
+    if (e.startTime) startTimes.push(e.startTime);
+  }
+
+  const duplicateCards = groupedDuplicates(
+    entries || [],
+    e => String(e.cardNumber || '').trim(),
+    e => `${e.className || 'クラス未設定'} / ${e.startNumber || '-'} / ${e.name || '氏名未設定'}`
+  );
+  const duplicateStartNumbers = groupedDuplicates(
+    entries || [],
+    e => String(e.startNumber || '').trim(),
+    e => `${e.className || 'クラス未設定'} / ${e.name || '氏名未設定'}`
+  );
+  const laneTimeConflicts = groupedDuplicates(
+    entries || [],
+    e => e.startTime ? `${e.lane || 1}レーン ${e.startTime}` : '',
+    e => `${e.className || 'クラス未設定'} / ${e.name || '氏名未設定'}`
+  );
+
+  const sortedTimes = startTimes.sort();
+  return {
+    total: (entries || []).length,
+    classCounts,
+    classTotal: Object.keys(classCounts).length,
+    laneCounts,
+    laneTotal: Object.keys(laneCounts).length,
+    blankCards,
+    duplicateCards,
+    duplicateStartNumbers,
+    laneTimeConflicts,
+    firstStart: sortedTimes[0] || '',
+    lastStart: sortedTimes[sortedTimes.length - 1] || '',
+  };
+}
+
+function renderOutputCheck(entries) {
+  if (!outputCheckEl || !entries || entries.length === 0) return;
+
+  const check = analyzeEntries(entries);
+  const rankingText = lastGenerationOptions && lastGenerationOptions.rankings.length > 0
+    ? `${lastGenerationOptions.rankings.length}件読み込み済み`
+    : 'なし';
+  const seedText = lastGenerationOptions ? lastGenerationOptions.seed : '未記録';
+  const timeText = check.firstStart && check.lastStart
+    ? `${check.firstStart} - ${check.lastStart}`
+    : '未設定';
+
+  let html = '<div class="check-panel-title">出力前チェック</div>';
+  html += '<div class="check-grid">';
+  html += `<div class="check-item"><strong>出走数</strong><span>${check.total}件 / ${check.classTotal}クラス</span></div>`;
+  html += `<div class="check-item"><strong>スタート時刻</strong><span>${escapeHtml(timeText)}</span></div>`;
+  html += `<div class="check-item"><strong>レーン</strong><span>${check.laneTotal}レーン</span></div>`;
+  html += `<div class="check-item"><strong>ランキングデータ</strong><span>${escapeHtml(rankingText)}</span></div>`;
+  html += `<div class="check-item ${check.blankCards ? 'warn' : ''}"><strong>カード番号未入力</strong><span>${check.blankCards}件</span></div>`;
+  html += `<div class="check-item ${check.duplicateCards.length ? 'error' : ''}"><strong>同じカード番号</strong><span>${check.duplicateCards.length}組</span></div>`;
+  html += `<div class="check-item ${check.duplicateStartNumbers.length ? 'error' : ''}"><strong>同じNo</strong><span>${check.duplicateStartNumbers.length}組</span></div>`;
+  html += `<div class="check-item ${check.laneTimeConflicts.length ? 'error' : ''}"><strong>同時刻の重なり</strong><span>${check.laneTimeConflicts.length}組</span></div>`;
+  html += '</div>';
+  html += '<ul class="check-list">';
+  html += `<li>ランダムシード: ${escapeHtml(String(seedText))}</li>`;
+  if (check.duplicateCards.length > 0) {
+    html += `<li>同じカード番号: ${escapeHtml(compactList(check.duplicateCards.map(g => g.key)))}</li>`;
+  }
+  if (check.laneTimeConflicts.length > 0) {
+    html += `<li>同じレーン・同じ時刻: ${escapeHtml(compactList(check.laneTimeConflicts.map(g => g.key)))}</li>`;
+  }
+  html += '<li>Mulka取込前に、カード番号とクラス設定をもう一度確認してください。</li>';
+  html += '</ul>';
+
+  outputCheckEl.innerHTML = html;
+  outputCheckEl.classList.remove('hidden');
 }
 
 function renderClassSection(output, allEntries, classEntries, className, activeCols, colDefs) {
@@ -3994,11 +4263,97 @@ function downloadBlob(blob, filename) {
   URL.revokeObjectURL(url);
 }
 
+function buildDownloadWarnings() {
+  if (!currentEntries) return [];
+  const check = analyzeEntries(currentEntries);
+  const warnings = [];
+  if (check.blankCards > 0) warnings.push(`カード番号未入力: ${check.blankCards}件`);
+  if (check.duplicateCards.length > 0) warnings.push(`同じカード番号: ${check.duplicateCards.length}組`);
+  if (check.duplicateStartNumbers.length > 0) warnings.push(`同じNo: ${check.duplicateStartNumbers.length}組`);
+  if (check.laneTimeConflicts.length > 0) warnings.push(`同じレーン・同じ時刻: ${check.laneTimeConflicts.length}組`);
+  return warnings;
+}
+
+function confirmMulkaDownload() {
+  const warnings = buildDownloadWarnings();
+  const lines = [
+    'Mulka2 CSVをダウンロードします。',
+    '',
+    '取込前に、入力データ、カード番号、クラス設定、スタート時刻を確認してください。',
+  ];
+  if (warnings.length > 0) {
+    lines.push('', '気になる点:', ...warnings.map(w => `・${w}`));
+  }
+  lines.push('', '確認してダウンロードしますか？');
+  return window.confirm(lines.join('\n'));
+}
+
+function buildCheckMemo() {
+  const participantCheck = analyzeParticipants(currentParticipants || []);
+  const entryCheck = analyzeEntries(currentEntries || []);
+  const options = lastGenerationOptions || {};
+  const lines = [];
+
+  lines.push('Oスタ 確認用メモ');
+  lines.push('');
+  lines.push(`作成日時: ${new Date().toLocaleString('ja-JP')}`);
+  if (currentFileInfo) {
+    lines.push(`入力ファイル: ${currentFileInfo.name} (${formatFileSize(currentFileInfo.size)})`);
+  }
+  lines.push('');
+  lines.push('読込後の確認');
+  lines.push(`- 参加者: ${participantCheck.total}名`);
+  lines.push(`- クラス数: ${participantCheck.classTotal}`);
+  lines.push(`- カード番号未入力: ${participantCheck.blankCards}件`);
+  lines.push(`- 同じカード番号: ${participantCheck.duplicateCards.length}組`);
+  lines.push(`- 同名・同所属の可能性: ${participantCheck.duplicateNames.length}組`);
+  lines.push(`- グループクラス: ${participantCheck.groupStarts}組`);
+  lines.push('');
+  lines.push('生成条件');
+  lines.push(`- スタート時刻: ${options.startTime || ''}`);
+  lines.push(`- スタート間隔: ${options.interval || ''}秒`);
+  lines.push(`- クラス間ギャップ: ${options.classGap || ''}秒`);
+  lines.push(`- レーン数: ${options.laneCount || ''}`);
+  lines.push(`- ランダムシード: ${options.seed || ''}`);
+  lines.push(`- ランキングデータ: ${options.rankings && options.rankings.length ? options.rankings.length + '件読み込み済み' : 'なし'}`);
+  lines.push('');
+  lines.push('出力前チェック');
+  lines.push(`- 出走数: ${entryCheck.total}件`);
+  lines.push(`- クラス数: ${entryCheck.classTotal}`);
+  lines.push(`- レーン数: ${entryCheck.laneTotal}`);
+  lines.push(`- スタート時刻: ${entryCheck.firstStart || ''} - ${entryCheck.lastStart || ''}`);
+  lines.push(`- カード番号未入力: ${entryCheck.blankCards}件`);
+  lines.push(`- 同じカード番号: ${entryCheck.duplicateCards.length}組`);
+  lines.push(`- 同じNo: ${entryCheck.duplicateStartNumbers.length}組`);
+  lines.push(`- 同じレーン・同じ時刻: ${entryCheck.laneTimeConflicts.length}組`);
+  if (entryCheck.duplicateCards.length > 0) {
+    lines.push(`- 同じカード番号の一覧: ${entryCheck.duplicateCards.map(g => g.key).join('、')}`);
+  }
+  if (entryCheck.laneTimeConflicts.length > 0) {
+    lines.push(`- 同じレーン・同じ時刻の一覧: ${entryCheck.laneTimeConflicts.map(g => g.key).join('、')}`);
+  }
+  lines.push('');
+  lines.push('確認事項');
+  lines.push('- Mulka取込前に、カード番号とクラス設定を確認する。');
+  lines.push('- 正式な大会運営で使う場合は、入力ファイルが確定版か確認する。');
+  lines.push('');
+
+  return lines.join('\n');
+}
+
 $('downloadMulka').addEventListener('click', () => {
   if (!currentEntries) return;
+  if (!confirmMulkaDownload()) return;
   const csv = generateMulka2CSV(currentEntries);
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   downloadBlob(blob, 'startlist_mulka2.csv');
+});
+
+$('downloadCheckMemo').addEventListener('click', () => {
+  if (!currentEntries) return;
+  const text = buildCheckMemo();
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  downloadBlob(blob, 'startlist_check_memo.txt');
 });
 
 $('printBtn').addEventListener('click', () => {
