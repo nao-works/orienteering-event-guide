@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Oスタ — スタートリスト生成ツール</title>
+<title>Oスタ — 締切後の発行支援ツール</title>
 <style>
 /* ========== Reset & Base ========== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -84,6 +84,25 @@ body {
 
 .role-note strong {
   color: var(--gray-800);
+}
+
+.publish-flow {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin: 12px auto 0;
+  max-width: 760px;
+}
+
+.publish-flow span {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: 999px;
+  color: var(--gray-600);
+  font-size: 0.78rem;
+  padding: 4px 10px;
 }
 
 /* ========== Card ========== */
@@ -192,6 +211,44 @@ body {
 
 .settings-details[open] summary::after {
   content: "閉じる";
+}
+
+.advanced-settings {
+  grid-column: 1 / -1;
+}
+
+.advanced-settings summary {
+  color: var(--gray-600);
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  list-style: none;
+}
+
+.advanced-settings summary::-webkit-details-marker {
+  display: none;
+}
+
+.advanced-settings summary::after {
+  color: var(--gray-400);
+  content: "開く";
+  float: right;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.advanced-settings[open] summary {
+  margin-bottom: 12px;
+}
+
+.advanced-settings[open] summary::after {
+  content: "閉じる";
+}
+
+.advanced-settings-body {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: 1fr;
 }
 
 .file-info {
@@ -1130,11 +1187,16 @@ body.edit-mode #editModeBtn {
 <div class="container">
   <!-- Header -->
   <div class="header no-print">
-    <h1>Oスタ — スタートリスト生成ツール</h1>
-    <p>CSVを入れるか、サンプルで流れを確認してください</p>
+    <h1>Oスタ — 締切後の発行支援ツール</h1>
+    <p>JOYのCSVから、プログラム用メモとスタートリストを作ります</p>
     <div class="role-note">
-      <strong>単日・下書き用。</strong>
-      CSV確認と簡易リスト作成に使えます。2日間大会や本番Mulkaは、この画面だけで確定しないでください。
+      <strong>単日大会向け。</strong>
+      クラス別人数、公開前チェック、スタートリスト、Mulkaたたき台をまとめて確認できます。
+    </div>
+    <div class="publish-flow" aria-label="Oスタの流れ">
+      <span>CSVを確認</span>
+      <span>プログラム用メモ</span>
+      <span>スタートリスト発行</span>
     </div>
   </div>
 
@@ -1146,7 +1208,7 @@ body.edit-mode #editModeBtn {
         CSVファイルをここにドラッグ＆ドロップ<br>
         または<strong>クリックして選択</strong>
       </div>
-      <div class="dropzone-hint">JOY からダウンロードしたCSVファイル（Shift_JIS / UTF-16 対応）</div>
+      <div class="dropzone-hint">JOY 締切後にダウンロードしたCSV/TSV（Shift_JIS / UTF-16 対応）</div>
     </div>
     <input type="file" id="fileInput" accept=".csv,.tsv,.txt" class="hidden">
     <div class="sample-actions">
@@ -1200,6 +1262,9 @@ body.edit-mode #editModeBtn {
           <label><input type="checkbox" data-col="lane"> レーン</label>
         </div>
       </div>
+      <details class="advanced-settings">
+        <summary>詳細設定（ランキング・クラス順）</summary>
+        <div class="advanced-settings-body">
       <div class="form-group full-width">
         <label>ランキングデータ（任意）</label>
         <div class="ranking-data-section" id="rankingDataSection">
@@ -1232,6 +1297,8 @@ body.edit-mode #editModeBtn {
         <label>クラス順序（ドラッグで並び替え）</label>
         <ul class="class-order-list" id="classOrderList"></ul>
       </div>
+        </div>
+      </details>
     </div>
     </details>
   </div>
@@ -1246,7 +1313,7 @@ body.edit-mode #editModeBtn {
     <div class="card-title no-print">スタートリスト</div>
     <div class="btn-group no-print">
       <button class="btn btn-outline" id="downloadMulka">Mulka2 CSV ダウンロード</button>
-      <button class="btn btn-outline" id="downloadCheckMemo">確認用メモ ダウンロード</button>
+      <button class="btn btn-outline" id="downloadCheckMemo">プログラム用メモ ダウンロード</button>
       <div>
         <button class="btn btn-outline" id="printBtn">PDF保存 / 印刷</button>
         <div class="print-hint">ブラウザの印刷ダイアログで「PDFに保存」を選択できます</div>
@@ -4482,18 +4549,31 @@ function confirmMulkaDownload() {
   return window.confirm(lines.join('\n'));
 }
 
+function formatClassCountSummary(classCounts) {
+  return Object.entries(classCounts || {})
+    .sort((a, b) => a[0].localeCompare(b[0], 'ja'))
+    .map(([cls, count]) => `${cls} ${count}`)
+    .join('、');
+}
+
 function buildCheckMemo() {
   const participantCheck = analyzeParticipants(currentParticipants || []);
   const entryCheck = analyzeEntries(currentEntries || []);
   const options = lastGenerationOptions || {};
   const lines = [];
 
-  lines.push('Oスタ 確認用メモ');
+  lines.push('Oスタ プログラム・発行前メモ');
   lines.push('');
   lines.push(`作成日時: ${new Date().toLocaleString('ja-JP')}`);
   if (currentFileInfo) {
     lines.push(`入力ファイル: ${currentFileInfo.name} (${formatFileSize(currentFileInfo.size)})`);
   }
+  lines.push('');
+  lines.push('プログラム掲載用');
+  lines.push(`- 出走数: ${entryCheck.total}件`);
+  lines.push(`- クラス数: ${entryCheck.classTotal}`);
+  lines.push(`- クラス別: ${formatClassCountSummary(entryCheck.classCounts) || 'なし'}`);
+  lines.push(`- スタート時刻: ${entryCheck.firstStart || ''} - ${entryCheck.lastStart || ''}`);
   lines.push('');
   lines.push('読込後の確認');
   lines.push(`- 読取件数: ${participantCheck.total}件`);
@@ -4551,7 +4631,7 @@ $('downloadCheckMemo').addEventListener('click', () => {
   if (!currentEntries) return;
   const text = buildCheckMemo();
   const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-  downloadBlob(blob, 'startlist_check_memo.txt');
+  downloadBlob(blob, 'osta_program_memo.txt');
 });
 
 $('printBtn').addEventListener('click', () => {
