@@ -349,6 +349,11 @@ body {
   margin: 3px 0;
 }
 
+.check-list .scope-warning {
+  color: #9a3412;
+  font-weight: 600;
+}
+
 /* ========== Settings ========== */
 .settings-grid {
   display: grid;
@@ -1473,6 +1478,20 @@ function findTeamFields(categories, columns) {
   return teamFields;
 }
 
+function detectJoyMeta(categories, columns, dataRows) {
+  const headers = categories.map((category, i) => `${category || ''} ${columns[i] || ''}`.trim());
+  const dayLabels = new Set();
+  for (const header of headers) {
+    const matches = header.match(/Day\s*\d+|DAY\s*\d+|\d+日目/g);
+    if (matches) matches.forEach(label => dayLabels.add(label.replace(/\s+/g, '')));
+  }
+  return {
+    sourceRows: dataRows.length,
+    hasDayColumns: dayLabels.size > 1,
+    dayLabels: [...dayLabels].sort(),
+  };
+}
+
 /**
  * Parse JOY CSV from an ArrayBuffer.
  * Returns array of participant objects.
@@ -1497,6 +1516,7 @@ function parseJoyCSV(buffer) {
   const teamFields = findTeamFields(categories, columns);
   const personSlots = findPersonSlots(categories, columns);
   const onePerRow = isOnePerRowFormat(categories);
+  currentParseMeta = detectJoyMeta(categories, columns, dataRows);
 
   const classIdx = teamFields['クラス'] ?? null;
   const clubIdx = teamFields['所属'] ?? null;
@@ -2045,6 +2065,7 @@ let currentEntries = null;
 let originalEntries = null; // for reset
 let generationDate = null;
 let currentFileInfo = null;
+let currentParseMeta = null;
 let lastGenerationOptions = null;
 
 const $ = id => document.getElementById(id);
@@ -2214,7 +2235,7 @@ function showParseSuccess(total, classCounts) {
   parseResultEl.className = 'parse-result success';
   parseResultEl.classList.remove('hidden');
 
-  let html = `<strong>${total}名</strong>の参加者を読み取りました`;
+  let html = `<strong>${total}件</strong>を読み取りました`;
   html += '<div class="class-summary">';
   for (const [cls, count] of Object.entries(classCounts).sort((a, b) => a[0].localeCompare(b[0]))) {
     html += `<span class="class-badge"><span class="class-label">${escapeHtml(cls)}</span> <span class="count">${count}</span></span>`;
@@ -2291,6 +2312,12 @@ function analyzeParticipants(participants) {
   };
 }
 
+function renderScopeWarning() {
+  if (!currentParseMeta || !currentParseMeta.hasDayColumns) return '';
+  const days = currentParseMeta.dayLabels.length ? `（${currentParseMeta.dayLabels.join(' / ')}）` : '';
+  return `<li class="scope-warning">Day1/Day2項目${escapeHtml(days)}を含むデータです。Oスタは日別の参加、フリースタート、固定ゼッケンを分けません。正式な2日間大会のMulka正本には使わないでください。</li>`;
+}
+
 function renderParticipantCheck(participants) {
   const check = analyzeParticipants(participants);
   const warnings = [];
@@ -2302,13 +2329,15 @@ function renderParticipantCheck(participants) {
   let html = '<details class="check-panel input-check" open>';
   html += '<summary class="check-panel-title">読込後の確認</summary>';
   html += '<div class="check-grid">';
-  html += `<div class="check-item"><strong>人数</strong><span>${check.total}名 / ${check.classTotal}クラス</span></div>`;
+  html += `<div class="check-item"><strong>読取件数</strong><span>${check.total}件 / ${check.classTotal}クラス</span></div>`;
   html += `<div class="check-item ${check.blankCards ? 'warn' : ''}"><strong>カード番号未入力</strong><span>${check.blankCards}件</span></div>`;
   html += `<div class="check-item ${check.duplicateCards.length ? 'error' : ''}"><strong>同じカード番号</strong><span>${check.duplicateCards.length}組</span></div>`;
   html += `<div class="check-item ${check.duplicateNames.length ? 'warn' : ''}"><strong>同名・同所属の可能性</strong><span>${check.duplicateNames.length}組</span></div>`;
   html += '</div>';
-  if (warnings.length > 0) {
+  const scopeWarning = renderScopeWarning();
+  if (warnings.length > 0 || scopeWarning) {
     html += '<ul class="check-list">';
+    html += scopeWarning;
     warnings.forEach(w => { html += `<li>${escapeHtml(w)}</li>`; });
     if (check.duplicateCards.length > 0) {
       html += `<li>同じカード番号: ${escapeHtml(compactList(check.duplicateCards.map(g => g.key)))}</li>`;
@@ -2333,6 +2362,7 @@ function resetUI() {
   currentEntries = null;
   originalEntries = null;
   currentFileInfo = null;
+  currentParseMeta = null;
   lastGenerationOptions = null;
   loadedRankings = [];
   if (outputCheckEl) outputCheckEl.classList.add('hidden');
@@ -4113,6 +4143,7 @@ function renderOutputCheck(entries) {
   if (check.laneTimeConflicts.length > 0) {
     html += `<li>同じレーン・同じ時刻: ${escapeHtml(compactList(check.laneTimeConflicts.map(g => g.key)))}</li>`;
   }
+  html += renderScopeWarning();
   html += '<li>Mulka取込前に、カード番号とクラス設定をもう一度確認してください。</li>';
   html += '</ul>';
 
@@ -4449,12 +4480,16 @@ function buildCheckMemo() {
   }
   lines.push('');
   lines.push('読込後の確認');
-  lines.push(`- 参加者: ${participantCheck.total}名`);
+  lines.push(`- 読取件数: ${participantCheck.total}件`);
   lines.push(`- クラス数: ${participantCheck.classTotal}`);
   lines.push(`- カード番号未入力: ${participantCheck.blankCards}件`);
   lines.push(`- 同じカード番号: ${participantCheck.duplicateCards.length}組`);
   lines.push(`- 同名・同所属の可能性: ${participantCheck.duplicateNames.length}組`);
   lines.push(`- グループクラス: ${participantCheck.groupStarts}組`);
+  if (currentParseMeta && currentParseMeta.hasDayColumns) {
+    const days = currentParseMeta.dayLabels.length ? `（${currentParseMeta.dayLabels.join(' / ')}）` : '';
+    lines.push(`- 注意: Day1/Day2項目${days}を含むデータです。Oスタは日別の参加、フリースタート、固定ゼッケンを分けません。`);
+  }
   lines.push('');
   lines.push('生成条件');
   lines.push(`- スタート時刻: ${options.startTime || ''}`);
