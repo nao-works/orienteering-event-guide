@@ -55,7 +55,7 @@ body {
 /* ========== Header ========== */
 .header {
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 22px;
 }
 
 .header h1 {
@@ -74,59 +74,6 @@ body {
   font-size: 0.9rem;
 }
 
-.status-note {
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
-  border-radius: var(--radius);
-  color: #9a3412;
-  font-size: 0.85rem;
-  line-height: 1.6;
-  margin: -8px 0 24px;
-  padding: 12px 16px;
-}
-
-.status-note strong {
-  color: #7c2d12;
-}
-
-.quick-flow {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: 1fr;
-  margin: -10px 0 24px;
-}
-
-@media (min-width: 640px) {
-  .quick-flow { grid-template-columns: repeat(4, 1fr); }
-}
-
-.quick-flow-item {
-  align-items: center;
-  background: white;
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius);
-  display: flex;
-  gap: 8px;
-  padding: 10px 12px;
-}
-
-.quick-flow-item strong {
-  align-items: center;
-  background: var(--blue);
-  border-radius: 999px;
-  color: white;
-  display: inline-flex;
-  flex: 0 0 22px;
-  font-size: 0.78rem;
-  height: 22px;
-  justify-content: center;
-}
-
-.quick-flow-item span {
-  color: var(--gray-700);
-  font-size: 0.84rem;
-}
-
 /* ========== Card ========== */
 .card {
   background: white;
@@ -134,6 +81,10 @@ body {
   box-shadow: var(--shadow);
   padding: 24px;
   margin-bottom: 24px;
+}
+
+.card.compact {
+  padding: 16px 18px;
 }
 
 .card-title {
@@ -154,7 +105,7 @@ body {
 .dropzone {
   border: 2px dashed var(--gray-300);
   border-radius: var(--radius);
-  padding: 48px 24px;
+  padding: 36px 20px;
   text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -193,12 +144,42 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 12px;
+  justify-content: center;
   margin-top: 16px;
 }
 
 .sample-actions .hint {
   color: var(--gray-500);
   font-size: 0.8rem;
+}
+
+.settings-details summary {
+  color: var(--gray-700);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 700;
+  list-style: none;
+}
+
+.settings-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.settings-details summary::after {
+  color: var(--gray-400);
+  content: "開く";
+  float: right;
+  font-size: 0.78rem;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.settings-details[open] summary {
+  margin-bottom: 14px;
+}
+
+.settings-details[open] summary::after {
+  content: "閉じる";
 }
 
 .file-info {
@@ -293,6 +274,31 @@ body {
   font-size: 0.9rem;
   font-weight: 700;
   margin-bottom: 10px;
+}
+
+.input-check > .check-panel-title {
+  cursor: pointer;
+  list-style: none;
+}
+
+.input-check > .check-panel-title::-webkit-details-marker {
+  display: none;
+}
+
+.input-check > .check-panel-title::after {
+  color: var(--gray-400);
+  content: "閉じる";
+  float: right;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.input-check:not([open]) > .check-panel-title {
+  margin-bottom: 0;
+}
+
+.input-check:not([open]) > .check-panel-title::after {
+  content: "開く";
 }
 
 .check-grid {
@@ -809,6 +815,19 @@ body {
   margin-top: 16px;
 }
 
+body:not(.edit-mode) .startlist-class-actions button,
+body:not(.edit-mode) .col-drag,
+body:not(.edit-mode) #resetOrderBtn,
+body:not(.edit-mode) #wreRankingBtn,
+body:not(.edit-mode) #regenerateBtn {
+  display: none !important;
+}
+
+body.edit-mode #editModeBtn {
+  background: var(--blue);
+  color: white;
+}
+
 .generate-section {
   text-align: center;
   margin: 24px 0;
@@ -1095,19 +1114,7 @@ body {
   <!-- Header -->
   <div class="header no-print">
     <h1>Oスタ — スタートリスト生成ツール</h1>
-    <p>JOY (Japan-O-entrY) のエントリーCSVファイルからスタートリストを生成します</p>
-  </div>
-
-  <div class="status-note no-print">
-    <strong>簡易・下書き用。</strong>
-    正式な大会運営で使う前に、入力データ、カード番号、クラス設定、スタート時刻、出力内容を必ず確認してください。
-  </div>
-
-  <div class="quick-flow no-print">
-    <div class="quick-flow-item"><strong>1</strong><span>CSVを入れる</span></div>
-    <div class="quick-flow-item"><strong>2</strong><span>読込結果を確認</span></div>
-    <div class="quick-flow-item"><strong>3</strong><span>スタートリスト生成</span></div>
-    <div class="quick-flow-item"><strong>4</strong><span>出力前に確認</span></div>
+    <p>CSVを入れるか、サンプルで流れを確認してください</p>
   </div>
 
   <!-- File Drop Zone -->
@@ -1122,8 +1129,8 @@ body {
     </div>
     <input type="file" id="fileInput" accept=".csv,.tsv,.txt" class="hidden">
     <div class="sample-actions">
-      <button type="button" class="btn btn-outline" id="sampleBtn">サンプルで試す</button>
-      <span class="hint">架空データで読込後の確認と出力前チェックを表示します</span>
+      <button type="button" class="btn btn-primary" id="sampleBtn">サンプルで試す</button>
+      <span class="hint">架空データですぐ試せます</span>
     </div>
     <div id="fileInfo" class="file-info hidden">
       <span class="file-name" id="fileName"></span>
@@ -1134,8 +1141,9 @@ body {
   </div>
 
   <!-- Settings -->
-  <div class="card no-print hidden" id="settingsCard">
-    <div class="card-title">設定</div>
+  <div class="card compact no-print hidden" id="settingsCard">
+    <details class="settings-details" id="settingsDetails" open>
+      <summary>生成設定</summary>
     <div class="settings-grid">
       <div class="form-group">
         <label for="startTime">スタート時刻</label>
@@ -1204,6 +1212,7 @@ body {
         <ul class="class-order-list" id="classOrderList"></ul>
       </div>
     </div>
+    </details>
   </div>
 
   <!-- Generate Button -->
@@ -1221,6 +1230,7 @@ body {
         <button class="btn btn-outline" id="printBtn">PDF保存 / 印刷</button>
         <div class="print-hint">ブラウザの印刷ダイアログで「PDFに保存」を選択できます</div>
       </div>
+      <button class="btn btn-outline" id="editModeBtn">並び替え操作</button>
       <button class="btn btn-outline" id="resetOrderBtn">全クラス並び順リセット</button>
       <button class="btn btn-outline" id="wreRankingBtn" style="display:none;">🌐 WRE: ME/WEをランキング順にする</button>
       <button class="btn btn-outline" id="regenerateBtn">再生成</button>
@@ -2049,11 +2059,26 @@ const fileRemoveEl = $('fileRemove');
 const sampleBtn = $('sampleBtn');
 const parseResultEl = $('parseResult');
 const settingsCard = $('settingsCard');
+const settingsDetails = $('settingsDetails');
 const generateSection = $('generateSection');
 const generateBtn = $('generateBtn');
 const resultCard = $('resultCard');
 const classOrderList = $('classOrderList');
 const outputCheckEl = $('outputCheck');
+const editModeBtn = $('editModeBtn');
+
+function setEditMode(enabled) {
+  document.body.classList.toggle('edit-mode', enabled);
+  if (editModeBtn) {
+    editModeBtn.textContent = enabled ? '通常表示に戻す' : '並び替え操作';
+  }
+}
+
+if (editModeBtn) {
+  editModeBtn.addEventListener('click', () => {
+    setEditMode(!document.body.classList.contains('edit-mode'));
+  });
+}
 
 dropzone.addEventListener('click', () => fileInput.click());
 
@@ -2096,6 +2121,7 @@ function formatFileSize(bytes) {
 }
 
 function handleFile(file, options = {}) {
+  setEditMode(false);
   currentFileInfo = {
     name: file.name,
     size: file.size,
@@ -2126,6 +2152,7 @@ function handleFile(file, options = {}) {
       showParseSuccess(currentParticipants.length, classCounts);
       buildClassOrderUI(classCounts);
       settingsCard.classList.remove('hidden');
+      if (settingsDetails) settingsDetails.open = !options.autoGenerate;
       generateSection.classList.remove('hidden');
       resultCard.classList.add('hidden');
       if (options.autoGenerate) {
@@ -2272,8 +2299,8 @@ function renderParticipantCheck(participants) {
   if (check.duplicateNames.length > 0) warnings.push(`同名・同所属の可能性: ${check.duplicateNames.length}組`);
   if (check.groupStarts > 0) warnings.push(`グループクラス: ${check.groupStarts}組`);
 
-  let html = '<div class="check-panel">';
-  html += '<div class="check-panel-title">読込後の確認</div>';
+  let html = '<details class="check-panel input-check" open>';
+  html += '<summary class="check-panel-title">読込後の確認</summary>';
   html += '<div class="check-grid">';
   html += `<div class="check-item"><strong>人数</strong><span>${check.total}名 / ${check.classTotal}クラス</span></div>`;
   html += `<div class="check-item ${check.blankCards ? 'warn' : ''}"><strong>カード番号未入力</strong><span>${check.blankCards}件</span></div>`;
@@ -2288,11 +2315,12 @@ function renderParticipantCheck(participants) {
     }
     html += '</ul>';
   }
-  html += '</div>';
+  html += '</details>';
   return html;
 }
 
 function resetUI() {
+  setEditMode(false);
   fileInput.value = '';
   fileInfoEl.classList.add('hidden');
   dropzone.classList.remove('hidden');
@@ -2885,7 +2913,10 @@ function generate() {
   generationDate = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
   renderStartList(currentEntries);
+  const inputCheck = parseResultEl.querySelector('.input-check');
+  if (inputCheck) inputCheck.open = false;
   resultCard.classList.remove('hidden');
+  generateSection.classList.add('hidden');
 
   // Show/hide WRE button based on detected ME/WE classes
   const wreBtn = $('wreRankingBtn');
